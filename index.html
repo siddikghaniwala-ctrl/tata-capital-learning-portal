@@ -1,0 +1,2283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tata Capital Learning & Development Portal | 360° Learning View</title>
+  
+  <!-- Favicon placeholder -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>TC</text></svg>">
+  
+  <!-- Google Fonts: Inter & Poppins -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome 6.5.1 CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- =========================================================================
+       1. DEMO CONTROLS BAR (PERSONA SIMULATOR - NO REAL LOGIN)
+       ========================================================================= -->
+  <header class="demo-bar no-print">
+    <div class="container demo-bar-inner">
+      <div class="demo-bar-label">
+        <span class="demo-badge"><i class="fa-solid fa-sliders"></i> Demo Controls</span>
+        <span>Simulate Persona:</span>
+      </div>
+
+      <div class="demo-controls-group">
+        <!-- 1. Business Filter -->
+        <div class="demo-control-item">
+          <label for="demo-business-select"><i class="fa-solid fa-building"></i> Business:</label>
+          <select id="demo-business-select" title="Select Business Vertical">
+            <option value="retail">Retail Finance (Consumer Finance)</option>
+            <option value="housing">Housing Finance</option>
+            <option value="motor">Motor Finance</option>
+            <option value="microfinance">Microfinance</option>
+            <option value="corporate_sme">Corporate & SME Finance</option>
+            <option value="wealth">Wealth</option>
+            <option value="dsmg">DSMG (Direct Sales)</option>
+            <option value="cleantech">Cleantech</option>
+            <option value="corp_functions">Corporate Functions</option>
+          </select>
+        </div>
+
+        <!-- 2. Role Selector (Hierarchy: Employee -> Manager -> Reviewer -> Business Head -> COO & Head HR) -->
+        <div class="demo-control-item">
+          <label for="demo-role-select"><i class="fa-solid fa-user-shield"></i> Role:</label>
+          <select id="demo-role-select" title="Select Role">
+            <option value="employee">Employee (Learner)</option>
+            <option value="manager">Manager (Direct Team)</option>
+            <option value="reviewer">Reviewer (Cluster / Area)</option>
+            <option value="biz_head">Business Head (Sample Two-Wheeler / Retail)</option>
+            <option value="coo_hr">COO Dashboard / Head HR Dashboard (Retail & BU View)</option>
+            <option value="md_chro">MD & CHRO (Executive Board View)</option>
+          </select>
+        </div>
+
+        <!-- 3. Employee Type Selector -->
+        <div class="demo-control-item">
+          <label for="demo-type-select"><i class="fa-solid fa-user-tag"></i> Employee Type:</label>
+          <select id="demo-type-select" title="Select Employee Type">
+            <option value="new">New Employee</option>
+            <option value="existing">Existing Employee</option>
+          </select>
+        </div>
+
+        <!-- 4. Days Since Joining -->
+        <div class="demo-control-item">
+          <label for="demo-days-input"><i class="fa-solid fa-calendar-day"></i> Days Since Joining:</label>
+          <input type="number" id="demo-days-input" min="1" max="900" value="45" title="Days since joining (e.g. 45)">
+        </div>
+
+        <button id="demo-reset-btn" class="demo-reset-btn" title="Reset all filters to defaults">
+          <i class="fa-solid fa-rotate-left"></i> Reset
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       2. STICKY CORPORATE HEADER & NAVIGATION TABS
+       ========================================================================= -->
+  <div class="main-header no-print">
+    <div class="container header-top">
+      <!-- Official Tata Capital Logo Box with Count on Us -->
+      <a href="#" class="logo-area" onclick="switchTab('learning-basket'); return false;">
+        <div class="logo-box">
+          <span class="tata-title">TATA CAPITAL</span>
+          <span class="logo-tagline">Count on Us</span>
+        </div>
+        <div class="portal-divider"></div>
+        <div class="portal-title-wrap">
+          <h1>Learning & Development</h1>
+          <span class="portal-subtitle-tag">360° Capability Portal</span>
+        </div>
+      </a>
+
+      <!-- Header User Profile & Quick Actions -->
+      <div class="header-actions">
+        <div class="user-profile-pill" id="user-profile-widget" title="Click to view Employee Dashboard">
+          <div class="user-avatar-badge" id="header-user-avatar" title="Siddik Ghaniwala">SG</div>
+          <div class="user-info">
+            <span class="user-name" id="header-user-name">Siddik Ghaniwala</span>
+            <span class="user-role-badge" id="header-user-role">New Employee • Retail</span>
+          </div>
+          <span class="journey-days-chip" id="header-journey-chip">
+            <i class="fa-solid fa-clock"></i> Day 45
+          </span>
+        </div>
+
+        <!-- Mobile Nav Menu Button -->
+        <button class="mobile-nav-toggle" id="mobile-nav-btn" aria-label="Toggle Navigation">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs Bar - All on One Screen, Zero Horizontal Scroll -->
+    <nav class="nav-tabs-wrapper" id="main-nav-wrapper">
+      <div class="container" style="padding-left: 0.5rem; padding-right: 0.5rem;">
+        <ul class="nav-tabs" role="tablist">
+          <li class="nav-tab-item">
+            <button class="nav-tab-btn" data-tab="about" onclick="switchTab('about')">
+              <i class="fa-solid fa-building-flag"></i> <span>About Tata Capital</span>
+            </button>
+          </li>
+          <li class="nav-tab-item">
+            <button class="nav-tab-btn active" data-tab="learning-basket" onclick="switchTab('learning-basket')">
+              <i class="fa-solid fa-route"></i> <span>Learning Basket</span>
+            </button>
+          </li>
+          <li class="nav-tab-item">
+            <button class="nav-tab-btn" data-tab="sherpa" onclick="switchTab('sherpa')">
+              <i class="fa-solid fa-person-chalkboard"></i> <span>Nominate Sherpa</span>
+            </button>
+          </li>
+          <li class="nav-tab-item">
+            <button class="nav-tab-btn" data-tab="kyt" onclick="switchTab('kyt')">
+              <i class="fa-solid fa-calendar-check"></i> <span>Know Your Trainings</span>
+            </button>
+          </li>
+          <li class="nav-tab-item">
+            <button class="nav-tab-btn" data-tab="compliance" onclick="switchTab('compliance')">
+              <i class="fa-solid fa-shield-halved"></i> <span>Compliance</span>
+            </button>
+          </li>
+          <li class="nav-tab-item">
+            <button class="nav-tab-btn" data-tab="engagement" onclick="switchTab('engagement')">
+              <i class="fa-solid fa-comments"></i> <span>Engagement</span>
+            </button>
+          </li>
+          <li class="nav-tab-item">
+            <button class="nav-tab-btn" data-tab="dashboard" onclick="switchTab('dashboard')">
+              <i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span>
+            </button>
+          </li>
+          <!-- Manager Tab: Visible only in Manager role -->
+          <li class="nav-tab-item" id="manager-nav-tab" style="display: none;">
+            <button class="nav-tab-btn manager-tab" data-tab="manager" onclick="switchTab('manager')">
+              <i class="fa-solid fa-users-gear"></i> <span>Manager View</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+
+  <!-- =========================================================================
+       3. HERO BANNER
+       ========================================================================= -->
+  <section class="hero-banner no-print">
+    <div class="container hero-inner">
+      <div class="hero-content">
+        <div class="hero-badge" id="hero-badge-tag">
+          <i class="fa-solid fa-sparkles"></i> 360° Learning Ecosystem • Tata Capital Limited
+        </div>
+        <h2 class="hero-title">
+          Welcome back, <span class="highlight-name" id="hero-greeting-name">Siddik Ghaniwala</span>
+        </h2>
+        <p class="hero-subtitle" id="hero-subtitle-text">
+          You are currently at <strong>Day 45</strong> of your Tata Capital journey. Explore our 360° capability roadmap and learning curriculum across businesses.
+        </p>
+
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="switchTab('learning-basket')">
+            <i class="fa-solid fa-compass"></i> Go to Learning Journey
+          </button>
+          <button class="btn btn-outline-white" onclick="switchTab('compliance')">
+            <i class="fa-solid fa-shield-halved"></i> Mandatory Compliance (78%)
+          </button>
+          <button class="btn btn-warm" onclick="switchTab('sherpa')">
+            <i class="fa-solid fa-hand-holding-hand"></i> Explore Sherpa Programme
+          </button>
+        </div>
+      </div>
+
+      <!-- Hero Quick Metrics -->
+      <div class="hero-stats-wrap">
+        <div class="hero-stat-card">
+          <span class="stat-label">Current Stage</span>
+          <span class="stat-val" id="hero-stage-stat">60 Days</span>
+          <span class="stat-desc">Operational Stage</span>
+        </div>
+        <div class="hero-stat-card">
+          <span class="stat-label">Compliance</span>
+          <span class="stat-val" id="hero-compliance-stat">78%</span>
+          <span class="stat-desc" style="color: #86efac;">1 Action Pending</span>
+        </div>
+        <div class="hero-stat-card">
+          <span class="stat-label">Next Training</span>
+          <span class="stat-val" style="font-size: 1.15rem;">17 Oct</span>
+          <span class="stat-desc">GenAI in Credit</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       PRINT HEADER (VISIBLE ONLY WHEN PRINTING)
+       ========================================================================= -->
+  <div class="print-header" style="display: none;">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #003366; padding-bottom: 8px;">
+      <div>
+        <h1 style="color: #003366; margin: 0; font-size: 20pt;">TATA CAPITAL</h1>
+        <p style="margin: 2px 0; font-size: 11pt; color: #555;">Learning & Development • 360° Employee Capability Summary</p>
+      </div>
+      <div style="text-align: right; font-size: 9pt; color: #555;">
+        <p style="margin: 0;"><strong>Employee:</strong> <span id="print-user-name">Siddik Ghaniwala</span> (TC-84920)</p>
+        <p style="margin: 0;"><strong>Business:</strong> <span id="print-user-biz">Retail Finance</span></p>
+        <p style="margin: 0;"><strong>Generated on:</strong> <span id="print-date"></span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MAIN CONTENT CONTAINER (PANE FOR EACH TAB)
+       ========================================================================= -->
+  <main class="main-content-area container">
+
+    <!-- ---------------------------------------------------------------------
+         TAB 1: ABOUT TATA CAPITAL
+         --------------------------------------------------------------------- -->
+    <section id="about-tab" class="tab-pane">
+      <div class="section-header">
+        <h2 class="section-title"><i class="fa-solid fa-building-flag"></i> About Tata Capital</h2>
+        <p class="section-subtitle">Discover the heritage of trust, our nationwide lending footprint, leadership, and our core purpose: "Count on Us".</p>
+      </div>
+
+      <!-- Animated Numbers Strip -->
+      <div class="numbers-strip">
+        <div class="numbers-grid" id="about-numbers-grid">
+          <!-- Dynamically populated from TC_DATA.companyInfo.stats -->
+        </div>
+      </div>
+
+      <!-- Vision & Purpose Highlight -->
+      <div class="journey-header-box" style="margin-bottom: 2.5rem; background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);">
+        <div style="max-width: 900px;">
+          <span class="badge badge-recommended" style="margin-bottom: 0.5rem;"><i class="fa-solid fa-gem"></i> Purpose & Ethos</span>
+          <h3 style="color: var(--tc-primary); font-size: 1.4rem; margin-bottom: 0.75rem;">Our Purpose: Count on Us</h3>
+          <p style="color: var(--text-body); font-size: 0.95rem; line-height: 1.6;">
+            At Tata Capital, we believe that responsible lending can transform lives and build sustainable enterprises. Guided by the 150+ year legacy of the Tata group, we blend high-touch human empathy with digital innovation to serve retail, housing, commercial, and rural borrowers across India.
+          </p>
+        </div>
+      </div>
+
+      <!-- Core Values Cards -->
+      <h3 style="color: var(--tc-primary); margin-bottom: 1rem; font-size: 1.25rem;"><i class="fa-solid fa-award"></i> The 5 Tata Core Values</h3>
+      <div class="values-grid" id="about-values-grid">
+        <!-- Dynamically populated from TC_DATA.companyInfo.values -->
+      </div>
+
+      <!-- 9 Business Training & L&D Verticals -->
+      <div class="section-header" style="margin-top: 2rem;">
+        <h3 class="section-title" style="font-size: 1.25rem;"><i class="fa-solid fa-graduation-cap"></i> Our 9 Business Training & L&D Verticals</h3>
+        <p class="section-subtitle">Structured from a capability enablement and training vertical perspective across Tata Capital's diverse lending, wealth, and functional ecosystems.</p>
+      </div>
+      <div class="business-grid" id="about-businesses-grid">
+        <!-- Dynamically populated from TC_DATA.businesses -->
+      </div>
+
+      <!-- Key Corporate Functions -->
+      <div class="section-header" style="margin-top: 2rem;">
+        <h3 class="section-title" style="font-size: 1.25rem;"><i class="fa-solid fa-gears"></i> Core Corporate & Support Functions</h3>
+        <p class="section-subtitle">Specialized competencies ensuring robust risk management, seamless disbursements, and regulatory compliance.</p>
+      </div>
+      <div class="business-grid" id="about-functions-grid">
+        <!-- Dynamically populated from TC_DATA.companyInfo.functions -->
+      </div>
+
+      <!-- Top Management Cards -->
+      <div class="section-header" style="margin-top: 2.5rem;">
+        <h3 class="section-title" style="font-size: 1.25rem;"><i class="fa-solid fa-user-tie"></i> Executive Leadership</h3>
+        <p class="section-subtitle">Senior Leadership Team of Tata Capital Limited (as per official disclosures on tatacapital.com).</p>
+      </div>
+      <div class="management-grid" id="about-management-grid">
+        <!-- Dynamically populated from TC_DATA.companyInfo.management -->
+      </div>
+
+      <!-- Know Your L&D Team Section (Covering All Businesses) -->
+      <div class="section-header" style="margin-top: 3rem;">
+        <div class="d-flex items-center justify-between" style="flex-wrap: wrap; gap: 0.75rem;">
+          <div>
+            <h3 class="section-title" style="font-size: 1.25rem;"><i class="fa-solid fa-people-roof"></i> Know Your L&D Team</h3>
+            <p class="section-subtitle">Dedicated Learning & Capability Partners supporting every business vertical across Tata Capital.</p>
+          </div>
+          <!-- Filter chips for L&D Team by Business -->
+          <div class="category-chips-bar" style="margin-bottom: 0; padding-bottom: 0; border-bottom: none;" id="ld-team-filter-bar">
+            <button class="cat-chip active" data-ldfilter="all" onclick="filterLdTeam('all')"><i class="fa-solid fa-border-all"></i> All Businesses</button>
+            <button class="cat-chip" data-ldfilter="central" onclick="filterLdTeam('central')"><i class="fa-solid fa-crown"></i> Central L&D</button>
+            <button class="cat-chip" data-ldfilter="retail" onclick="filterLdTeam('retail')">Retail</button>
+            <button class="cat-chip" data-ldfilter="housing" onclick="filterLdTeam('housing')">Housing</button>
+            <button class="cat-chip" data-ldfilter="motor" onclick="filterLdTeam('motor')">Motor</button>
+            <button class="cat-chip" data-ldfilter="microfinance" onclick="filterLdTeam('microfinance')">Microfinance</button>
+            <button class="cat-chip" data-ldfilter="corporate_sme" onclick="filterLdTeam('corporate_sme')">Corporate & SME</button>
+            <button class="cat-chip" data-ldfilter="wealth" onclick="filterLdTeam('wealth')">Wealth</button>
+            <button class="cat-chip" data-ldfilter="dsmg" onclick="filterLdTeam('dsmg')">DSMG</button>
+            <button class="cat-chip" data-ldfilter="cleantech" onclick="filterLdTeam('cleantech')">Cleantech</button>
+            <button class="cat-chip" data-ldfilter="corp_functions" onclick="filterLdTeam('corp_functions')">Corp Functions</button>
+          </div>
+        </div>
+      </div>
+      <div class="ld-team-grid" id="about-ldteam-grid">
+        <!-- Dynamically populated from TC_DATA.ldTeam -->
+      </div>
+
+      <!-- Company Historical Milestones Timeline -->
+      <div class="section-header" style="margin-top: 3rem;">
+        <h3 class="section-title" style="font-size: 1.25rem;"><i class="fa-solid fa-timeline"></i> Our Growth Journey Timeline</h3>
+        <p class="section-subtitle">From incorporation in 2007 to becoming one of India's most respected NBFCs.</p>
+      </div>
+      <div class="timeline-wrap" id="about-timeline-wrap">
+        <!-- Dynamically populated from TC_DATA.companyInfo.timeline -->
+      </div>
+    </section>
+
+    <!-- ---------------------------------------------------------------------
+         TAB 2: LEARNING BASKET (THE MOST IMPORTANT JOURNEY-BASED TAB)
+         --------------------------------------------------------------------- -->
+    <section id="learning-basket-tab" class="tab-pane active">
+      <div class="journey-header-box">
+        <!-- Dual View Toggle at Top -->
+        <div class="journey-top-bar">
+          <div>
+            <span class="badge badge-tag" id="current-biz-tag-lb"><i class="fa-solid fa-building"></i> Retail Finance</span>
+            <h2 class="section-title" style="margin-top: 0.35rem; font-size: 1.45rem;">
+              <i class="fa-solid fa-route"></i> 360° Learning Journey Roadmap
+            </h2>
+            <p class="section-subtitle">A progressive 5-stage milestone roadmap tailored for lending excellence.</p>
+          </div>
+
+          <!-- New vs Existing Employee View Toggle -->
+          <div class="journey-view-toggle">
+            <button class="view-toggle-btn active" id="view-toggle-new" onclick="setLearningBasketView('new')">
+              <i class="fa-solid fa-seedling"></i> New Employee View
+            </button>
+            <button class="view-toggle-btn" id="view-toggle-existing" onclick="setLearningBasketView('existing')">
+              <i class="fa-solid fa-arrow-trend-up"></i> Existing Employee View
+            </button>
+          </div>
+        </div>
+
+        <!-- Horizontal Stepper Roadmap (30 > 60 > 90 > 180 > 360+) -->
+        <div class="roadmap-container">
+          <div class="roadmap-track">
+            <div class="roadmap-progress-line" id="roadmap-progress-line" style="width: 30%;"></div>
+            
+            <!-- 30 Days Step -->
+            <button class="roadmap-step" data-milestone="30" onclick="selectMilestone(30)" title="Click to view 30 Days Milestone">
+              <div class="step-node"><i class="fa-solid fa-flag-checkered"></i></div>
+              <div class="step-info">
+                <span class="step-days">30 Days</span>
+                <span class="step-label">Settle In</span>
+                <span class="step-status-chip badge-completed">Completed</span>
+              </div>
+            </button>
+
+            <!-- 60 Days Step -->
+            <button class="roadmap-step" data-milestone="60" onclick="selectMilestone(60)" title="Click to view 60 Days Milestone">
+              <div class="step-node">
+                <div class="you-are-here-badge" id="you-are-here-marker"><i class="fa-solid fa-location-dot"></i> YOU ARE HERE</div>
+                <i class="fa-solid fa-gears"></i>
+              </div>
+              <div class="step-info">
+                <span class="step-days">60 Days</span>
+                <span class="step-label">Working Knowledge</span>
+                <span class="step-status-chip badge-in-progress">In Progress</span>
+              </div>
+            </button>
+
+            <!-- 90 Days Step -->
+            <button class="roadmap-step" data-milestone="90" onclick="selectMilestone(90)" title="Click to view 90 Days Milestone">
+              <div class="step-node"><i class="fa-solid fa-chart-line"></i></div>
+              <div class="step-info">
+                <span class="step-days">90 Days</span>
+                <span class="step-label">Productive</span>
+                <span class="step-status-chip badge-upcoming">Upcoming</span>
+              </div>
+            </button>
+
+            <!-- 180 Days Step -->
+            <button class="roadmap-step" data-milestone="180" onclick="selectMilestone(180)" title="Click to view 180 Days Milestone">
+              <div class="step-node"><i class="fa-solid fa-brain"></i></div>
+              <div class="step-info">
+                <span class="step-days">180 Days</span>
+                <span class="step-label">Specialise</span>
+                <span class="step-status-chip badge-upcoming">Upcoming</span>
+              </div>
+            </button>
+
+            <!-- 360+ Days Step -->
+            <button class="roadmap-step" data-milestone="360" onclick="selectMilestone(360)" title="Click to view 360+ Days Milestone">
+              <div class="step-node"><i class="fa-solid fa-trophy"></i></div>
+              <div class="step-info">
+                <span class="step-days">360+ Days</span>
+                <span class="step-label">Grow & Lead</span>
+                <span class="step-status-chip badge-upcoming">Upcoming</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVE MILESTONE DETAIL CONTAINER -->
+      <div class="milestone-detail-card" id="milestone-detail-box">
+        
+        <!-- BLOCK a: "WHY THIS STAGE MATTERS" PANEL -->
+        <div class="why-matters-panel" id="why-matters-container">
+          <div class="why-matters-header">
+            <i class="fa-solid fa-lightbulb"></i>
+            <h4 class="why-matters-title" id="why-matters-stage-title">Why the 60-Day Stage Matters</h4>
+          </div>
+          <p class="why-matters-text" id="why-matters-body-text">
+            Build hands-on working knowledge. Learn business processes, credit appraisal guidelines, and transaction processing so you can work with minimal supervision.
+          </p>
+        </div>
+
+        <!-- BLOCK b: "WHAT YOU WILL LEARN" OUTCOMES CHECKLIST -->
+        <div class="learn-outcomes-wrap">
+          <h4 class="block-title"><i class="fa-solid fa-list-check"></i> What You Will Learn (Outcomes Checklist)</h4>
+          <ul class="outcomes-list" id="outcomes-checklist-items">
+            <!-- Dynamically populated based on active milestone & employee type -->
+          </ul>
+        </div>
+
+        <!-- BLOCK c: "YOUR TRAININGS" SECTION -->
+        <div class="trainings-section">
+          <div class="d-flex items-center justify-between" style="flex-wrap: wrap; margin-bottom: 0.75rem;">
+            <h4 class="block-title" style="margin-bottom: 0;"><i class="fa-solid fa-graduation-cap"></i> Your Assigned & Recommended Trainings</h4>
+            <span class="text-muted" style="font-size: 0.8rem;" id="trainings-count-label">Showing 6 courses for Retail Finance</span>
+          </div>
+
+          <!-- Category Filter Chips -->
+          <div class="category-chips-bar" id="category-chips-container">
+            <button class="cat-chip active" data-cat="all" onclick="filterByCategory('all')">
+              <i class="fa-solid fa-border-all"></i> All Categories
+            </button>
+            <button class="cat-chip" data-cat="orientation" onclick="filterByCategory('orientation')">
+              <i class="fa-solid fa-handshake"></i> Orientation
+            </button>
+            <button class="cat-chip" data-cat="product" onclick="filterByCategory('product')">
+              <i class="fa-solid fa-file-invoice-dollar"></i> Product Training
+            </button>
+            <button class="cat-chip" data-cat="process" onclick="filterByCategory('process')">
+              <i class="fa-solid fa-gears"></i> Process Training
+            </button>
+            <button class="cat-chip" data-cat="systems" onclick="filterByCategory('systems')">
+              <i class="fa-solid fa-laptop-code"></i> Systems (FinnOne / CRM)
+            </button>
+            <button class="cat-chip" data-cat="cross_functional" onclick="filterByCategory('cross_functional')">
+              <i class="fa-solid fa-arrows-split-up-and-left"></i> Cross-Functional
+            </button>
+            <button class="cat-chip" data-cat="digital" onclick="filterByCategory('digital')">
+              <i class="fa-solid fa-microchip"></i> Digital Training
+            </button>
+            <button class="cat-chip" data-cat="compliance" onclick="filterByCategory('compliance')">
+              <i class="fa-solid fa-shield-halved"></i> Compliance
+            </button>
+            <button class="cat-chip" data-cat="leadership" onclick="filterByCategory('leadership')">
+              <i class="fa-solid fa-people-roof"></i> Leadership & Behavioural
+            </button>
+          </div>
+
+          <!-- Digital Sub-tabs (AI, Excel, PowerPoint) - shown when Digital or All is selected -->
+          <div class="digital-subtabs" id="digital-subtabs-row">
+            <span><i class="fa-solid fa-wand-magic-sparkles"></i> Digital Sub-Tracks:</span>
+            <button class="subtab-chip active" data-sub="all" onclick="filterDigitalSub('all')">All Digital</button>
+            <button class="subtab-chip" data-sub="ai" onclick="filterDigitalSub('ai')"><i class="fa-solid fa-robot"></i> AI & Prompting</button>
+            <button class="subtab-chip" data-sub="excel" onclick="filterDigitalSub('excel')"><i class="fa-solid fa-file-excel"></i> Advanced Excel</button>
+            <button class="subtab-chip" data-sub="ppt" onclick="filterDigitalSub('ppt')"><i class="fa-solid fa-file-powerpoint"></i> PowerPoint Storytelling</button>
+          </div>
+
+          <!-- Search & Filter Controls -->
+          <div class="trainings-filter-bar">
+            <div class="search-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="training-search-input" placeholder="Search trainings by title, topic or trainer..." oninput="onSearchTraining(this.value)">
+            </div>
+            
+            <div class="filter-selects">
+              <select class="filter-select" id="filter-mode-select" onchange="applyTrainingFilters()" title="Delivery Mode">
+                <option value="all">All Modes</option>
+                <option value="Classroom">Classroom</option>
+                <option value="Virtual">Virtual</option>
+                <option value="E-Learning">E-Learning</option>
+              </select>
+
+              <select class="filter-select" id="filter-level-select" onchange="applyTrainingFilters()" title="Skill Level">
+                <option value="all">All Levels</option>
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+              </select>
+
+              <select class="filter-select" id="filter-tag-select" onchange="applyTrainingFilters()" title="Mandatory vs Recommended">
+                <option value="all">All Priorities</option>
+                <option value="Mandatory">Mandatory Only</option>
+                <option value="Recommended">Recommended Only</option>
+              </select>
+
+              <select class="filter-select" id="filter-sort-select" onchange="applyTrainingFilters()" title="Sort By">
+                <option value="relevance">Sort: Recommended</option>
+                <option value="rating">Sort: Highest Rating</option>
+                <option value="duration">Sort: Duration</option>
+                <option value="title">Sort: Course Name</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Training Cards Grid -->
+          <div class="training-cards-grid" id="training-cards-grid">
+            <!-- Dynamically populated training cards -->
+          </div>
+        </div>
+
+        <!-- BLOCK d: "HOW IT HELPS YOU" BENEFIT POINTS -->
+        <div class="how-helps-wrap">
+          <h4 class="block-title"><i class="fa-solid fa-arrow-trend-up"></i> How This Stage Helps You</h4>
+          <div class="benefits-grid" id="benefits-grid-items">
+            <!-- Dynamically populated benefit cards -->
+          </div>
+        </div>
+
+        <!-- BLOCK e: MILESTONE PROGRESS BAR (x of y completed) -->
+        <div class="milestone-progress-footer">
+          <div class="progress-info">
+            <span class="progress-label" id="milestone-progress-text">Milestone Progress: 3 of 5 Completed</span>
+            <span class="progress-sub" id="milestone-progress-sub">Complete remaining 2 courses to achieve 60-day certification.</span>
+          </div>
+          <div class="progress-bar-outer">
+            <div class="progress-bar-inner" id="milestone-progress-bar-fill" style="width: 60%;"></div>
+          </div>
+          <button class="btn btn-primary" onclick="markAllMilestoneComplete()">
+            <i class="fa-solid fa-circle-check"></i> Mark Stage Complete
+          </button>
+        </div>
+
+      </div><!-- End milestone-detail-box -->
+
+      <!-- =========================================================================
+           SELF-PACED LEARNING / E-LEARNING BASKET SECTION
+           ========================================================================= -->
+      <div class="elearning-hub-section" id="elearning-section" style="margin-top: 3rem;">
+        <div class="section-header-row d-flex items-center justify-between" style="flex-wrap: wrap; margin-bottom: 1.25rem;">
+          <div>
+            <span class="badge" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; margin-bottom: 0.35rem;">
+              <i class="fa-solid fa-bolt-lightning"></i> 24x7 On-Demand Self-Learning Academy
+            </span>
+            <h3 class="section-title" style="margin-top: 0.25rem; font-size: 1.35rem;">
+              <i class="fa-solid fa-laptop-file"></i> Self-Paced E-Learning & Simulation Basket
+            </h3>
+            <p class="section-subtitle">Microlearning (5-15 mins), interactive lending simulators, credit sandboxes, and video masterclasses available anytime.</p>
+          </div>
+          <div class="elearning-stats-pill">
+            <span class="pill-badge"><i class="fa-solid fa-circle-check"></i> 6 Modules Available</span>
+            <span class="text-muted" style="font-size: 0.8rem;">Auto-synced to LMS Scorecard</span>
+          </div>
+        </div>
+
+        <!-- E-Learning Category Filter Chips -->
+        <div class="category-chips-bar" id="elearning-chips-container" style="margin-bottom: 1.25rem;">
+          <button class="cat-chip active" data-elcat="all" onclick="filterElearning('all')">
+            <i class="fa-solid fa-border-all"></i> All Self-Paced Modules
+          </button>
+          <button class="cat-chip" data-elcat="microlearning" onclick="filterElearning('microlearning')">
+            <i class="fa-solid fa-stopwatch"></i> Microlearning (5-15 mins)
+          </button>
+          <button class="cat-chip" data-elcat="masterclass" onclick="filterElearning('masterclass')">
+            <i class="fa-solid fa-chalkboard-user"></i> Video Masterclasses
+          </button>
+          <button class="cat-chip" data-elcat="simulator" onclick="filterElearning('simulator')">
+            <i class="fa-solid fa-laptop-code"></i> Underwriting Simulators
+          </button>
+          <button class="cat-chip" data-elcat="tools" onclick="filterElearning('tools')">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> AI & Digital Tools
+          </button>
+        </div>
+
+        <!-- E-Learning Cards Grid -->
+        <div class="elearning-cards-grid" id="elearning-cards-grid">
+          <!-- Dynamically populated from TC_DATA.eLearning in app.js -->
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ---------------------------------------------------------------------
+         TAB 3: NOMINATE YOURSELF - SHERPA (SME PROGRAMME)
+         --------------------------------------------------------------------- -->
+    <section id="sherpa-tab" class="tab-pane">
+      <!-- Sherpa Hero Card -->
+      <div class="sherpa-hero">
+        <div class="sherpa-hero-content">
+          <span class="badge" style="background: var(--tc-warm); color: #fff; margin-bottom: 0.5rem;">
+            <i class="fa-solid fa-award"></i> Nominate Yourself as a Sherpa - SME Programme
+          </span>
+          <h2 class="sherpa-title">Nomination for SHERPA: Leaders Developing Leaders</h2>
+          <p class="sherpa-subtitle">Subject Matter Experts from the Business, Shaping Future Champions as Internal Strategic Consultants</p>
+          <p class="sherpa-desc">
+            Are you passionate about your domain? The Sherpa Programme identifies top practitioners—underwriters, sales heads, risk analysts, and legal managers—and trains them to deliver high-impact workshops and act as internal domain consultants across Tata Capital.
+          </p>
+          <div class="d-flex items-center gap-2" style="flex-wrap: wrap;">
+            <a href="#nominate-form-section" class="btn btn-warm" style="display: inline-flex;">
+              <i class="fa-solid fa-file-signature"></i> Go to Nomination Form
+            </a>
+            <button class="btn btn-outline-white" onclick="openSherpaStepModal(1)">
+              <i class="fa-solid fa-circle-info"></i> View 4-Step Selection Process
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pulsating / Flashing Eligibility Box (Visible for 210-day Vintage Employees) -->
+      <div id="sherpa-flashing-eligible-box" style="margin-top: 1.5rem;">
+        <!-- Injected dynamically in app.js -->
+      </div>
+
+      <!-- Sherpa Animated Counters -->
+      <div class="numbers-strip" style="margin-bottom: 2.5rem; background: #0f172a;">
+        <div class="numbers-grid" id="sherpa-stats-grid">
+          <!-- Populated from TC_DATA.sherpaInfo.stats -->
+        </div>
+      </div>
+
+      <!-- 4-Step Process Graphic -->
+      <div class="section-header">
+        <div class="d-flex justify-between items-center" style="flex-wrap: wrap;">
+          <div>
+            <h3 class="section-title"><i class="fa-solid fa-shoe-prints"></i> How the Sherpa Journey Works (4-Step Process)</h3>
+            <p class="section-subtitle">A structured, prestigious path from domain expert to accredited internal consultant. <strong>Click any step below for detailed syllabus & prerequisites.</strong></p>
+          </div>
+          <span class="badge badge-tag"><i class="fa-solid fa-hand-pointer"></i> Interactive Cards (Click to Explore)</span>
+        </div>
+      </div>
+      <div class="process-steps-grid" id="sherpa-process-grid">
+        <!-- Populated from TC_DATA.sherpaInfo.processSteps -->
+      </div>
+
+      <!-- Past Events Photo Gallery with Lightbox -->
+      <div class="section-header" style="margin-top: 2.5rem;">
+        <h3 class="section-title"><i class="fa-solid fa-images"></i> Sherpa Moments in Action (Photo Gallery)</h3>
+        <p class="section-subtitle">Moments from Annual RnR felicitation, Train-The-Trainer (TTT) bootcamps, and live classroom facilitation.</p>
+      </div>
+      <div class="gallery-grid" id="sherpa-gallery-grid">
+        <!-- Populated from TC_DATA.sherpaInfo.gallery -->
+      </div>
+
+      <!-- Sherpa Testimonials -->
+      <div class="section-header" style="margin-top: 2.5rem;">
+        <h3 class="section-title"><i class="fa-solid fa-quote-left"></i> Voices of Our Sherpas (The Internal Consultant Programme)</h3>
+        <p class="section-subtitle">Hear how becoming an accredited internal domain consultant has transformed business impact and careers.</p>
+      </div>
+      <div class="testimonials-grid" id="sherpa-testimonials-grid">
+        <!-- Populated from TC_DATA.sherpaInfo.testimonials -->
+      </div>
+
+      <!-- Nominate Yourself Container (Conditionally Locked for New Hires, Unlocked for Vintage Employees) -->
+      <div id="sherpa-eligibility-container">
+        <!-- Rendered dynamically by renderSherpaEligibility() in app.js -->
+        <div class="section-header" id="nominate-form-section" style="margin-top: 3rem; text-align: center;">
+          <h3 class="section-title" style="justify-content: center;"><i class="fa-solid fa-pen-to-square"></i> Nominate Yourself as a Sherpa</h3>
+          <p class="section-subtitle">Step up to lead. Complete the nomination below for review by L&D and your business head.</p>
+        </div>
+
+        <div class="nomination-form-card" id="sherpa-form-card">
+          <form id="sherpa-nomination-form" onsubmit="handleSherpaSubmit(event)">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="sherpa-name"><i class="fa-solid fa-user"></i> Full Name *</label>
+                <input type="text" id="sherpa-name" class="form-control" value="Siddik Ghaniwala" required>
+              </div>
+
+              <div class="form-group">
+                <label for="sherpa-empid"><i class="fa-solid fa-id-card"></i> Employee ID *</label>
+                <input type="text" id="sherpa-empid" class="form-control" value="TC-84920" required>
+              </div>
+
+              <div class="form-group">
+                <label for="sherpa-business"><i class="fa-solid fa-building"></i> Business Vertical *</label>
+                <select id="sherpa-business" class="form-control" required>
+                  <option value="Retail Finance (Consumer Finance)" selected>Retail Finance (Consumer Finance)</option>
+                  <option value="Housing Finance">Housing Finance</option>
+                  <option value="Motor Finance">Motor Finance</option>
+                  <option value="Microfinance">Microfinance</option>
+                  <option value="Corporate & SME Finance">Corporate & SME Finance</option>
+                  <option value="Wealth">Wealth</option>
+                  <option value="DSMG">DSMG</option>
+                  <option value="Cleantech">Cleantech</option>
+                  <option value="Corporate Functions">Corporate Functions</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="sherpa-tenure"><i class="fa-solid fa-business-time"></i> Years in Tata Capital *</label>
+                <select id="sherpa-tenure" class="form-control" required>
+                  <option value="Under 1 Year">Under 1 Year (6-12 Months Vintage)</option>
+                  <option value="1 to 3 Years" selected>1 to 3 Years</option>
+                  <option value="3 to 5 Years">3 to 5 Years</option>
+                  <option value="5+ Years">5+ Years</option>
+                </select>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="sherpa-expertise"><i class="fa-solid fa-bullseye"></i> Primary Area of Expertise *</label>
+                <input type="text" id="sherpa-expertise" class="form-control" placeholder="e.g. Unsecured Credit Underwriting, Financial Ratio Scrub, CIBIL Analysis" required>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="sherpa-topics"><i class="fa-solid fa-chalkboard"></i> Topics / Courses You Want to Facilitate *</label>
+                <textarea id="sherpa-topics" class="form-control" rows="3" placeholder="List 2-3 specific topics or workshops you can deliver for new hires or upskilling cohorts..." required></textarea>
+              </div>
+
+              <div class="form-group full-width">
+                <label class="checkbox-label">
+                  <input type="checkbox" id="sherpa-approval" required>
+                  <span><strong>Manager Endorsement:</strong> I have discussed this nomination with my reporting manager, who supports my participation in the 2-day Train-The-Trainer Boot Camp.</span>
+                </label>
+              </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; text-align: right;">
+              <button type="submit" class="btn btn-primary" style="padding: 0.75rem 2rem;">
+                <i class="fa-solid fa-paper-plane"></i> Submit Sherpa Nomination
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------------------------------------
+         TAB 4: KNOW YOUR TRAININGS (MONTHLY & CALENDAR VIEW)
+         --------------------------------------------------------------------- -->
+    <section id="kyt-tab" class="tab-pane">
+      <div class="section-header">
+        <h2 class="section-title"><i class="fa-solid fa-calendar-check"></i> Know Your Trainings</h2>
+        <p class="section-subtitle">Track your month-by-month assigned trainings across the financial year.</p>
+      </div>
+
+      <!-- Mandatory Training Nomination Alert Banner -->
+      <div class="kyt-nomination-notice-banner" id="kyt-nomination-banner" style="margin-bottom: 1.5rem;">
+        <div class="kyt-notice-icon"><i class="fa-solid fa-calendar-check"></i></div>
+        <div>
+          <h4 id="kyt-notice-title" style="margin: 0; font-size: 1rem; color: #1e3a8a;">Nominated Training Schedule for November 2026</h4>
+          <p id="kyt-notice-desc" style="margin: 0.25rem 0 0; font-size: 0.85rem; color: #1e40af;">
+            These are the training programs in the month of <strong>November 2026</strong> where you are nominated based on your business vertical and active Learning Basket. <strong>You need to attend these programs.</strong>
+          </p>
+        </div>
+      </div>
+
+      <!-- Controls: Month Dropdown + View Toggle -->
+      <div class="kyt-controls-bar">
+        <div class="month-selector-group">
+          <label for="kyt-month-select" class="font-semibold"><i class="fa-regular fa-calendar"></i> Select Month:</label>
+          <select id="kyt-month-select" class="form-control" style="width: auto; min-width: 160px;" onchange="renderMonthlyTrainings(this.value)">
+            <!-- Populated from TC_DATA.months -->
+          </select>
+        </div>
+
+        <div class="view-mode-toggle">
+          <button class="view-mode-btn active" id="view-mode-list-btn" onclick="setKytViewMode('list')">
+            <i class="fa-solid fa-list-ul"></i> List View
+          </button>
+          <button class="view-mode-btn" id="view-mode-cal-btn" onclick="setKytViewMode('calendar')">
+            <i class="fa-solid fa-calendar-days"></i> Calendar View
+          </button>
+        </div>
+      </div>
+
+      <!-- Dedicated "New Employee Orientation" Spotlight Section -->
+      <div class="orientation-spotlight-card" id="kyt-orientation-box">
+        <div class="d-flex items-center justify-between" style="flex-wrap: wrap;">
+          <div>
+            <span class="badge badge-completed"><i class="fa-solid fa-sparkles"></i> 5-Day Induction Track</span>
+            <h3 style="color: var(--tc-primary); font-size: 1.15rem; margin-top: 0.35rem;">New Employee Orientation Programme (NEOP) Checklist</h3>
+            <p class="text-muted" style="font-size: 0.8rem;">Every new joiner must complete this 5-day structured foundation track.</p>
+          </div>
+          <span class="badge badge-in-progress" style="font-size: 0.8rem;">Day 4 in Progress</span>
+        </div>
+
+        <div class="orientation-days-grid" id="kyt-orientation-grid">
+          <!-- Populated from TC_DATA.orientationSchedule -->
+        </div>
+      </div>
+
+      <!-- Monthly Trainings Schedule Container (List vs Calendar) -->
+      <div id="kyt-schedule-content-wrap">
+        <!-- Rendered by app.js: table or calendar grid -->
+      </div>
+    </section>
+
+    <!-- ---------------------------------------------------------------------
+         TAB 5: COMPLIANCE MODULES
+         --------------------------------------------------------------------- -->
+    <section id="compliance-tab" class="tab-pane">
+      <div class="section-header">
+        <h2 class="section-title"><i class="fa-solid fa-shield-halved"></i> Mandatory Compliance Modules</h2>
+        <p class="section-subtitle">Regulatory and Tata group certifications that every employee must keep 100% compliant.</p>
+      </div>
+
+      <!-- Top Overview & Circular Gauge -->
+      <div class="compliance-overview-header">
+        <div class="compliance-status-block">
+          <div class="compliance-gauge-circle" id="compliance-gauge-circle">
+            <div class="gauge-inner">78%</div>
+          </div>
+          <div>
+            <h3 style="color: var(--tc-primary); font-size: 1.25rem; margin-bottom: 0.25rem;">Overall Compliance Health: Good</h3>
+            <p class="text-muted" style="font-size: 0.85rem; margin-bottom: 0.5rem;">
+              4 of 6 modules completed or in-progress. Complete the remaining 2 modules before their respective due dates.
+            </p>
+            <span class="badge badge-completed"><i class="fa-solid fa-circle-check"></i> TCOC Certified</span>
+            <span class="badge badge-completed"><i class="fa-solid fa-circle-check"></i> POSH Certified</span>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="simulateCompleteAllCompliance()">
+          <i class="fa-solid fa-certificate"></i> Fast-Track All Due Modules
+        </button>
+      </div>
+
+      <!-- Overdue / Urgent Warning Banner -->
+      <div class="alert-banner" id="compliance-warning-banner">
+        <div class="alert-banner-content">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <div>
+            <h4 class="alert-title">Attention: Information Security & Data Protection (DPDP) Due Soon</h4>
+            <p class="alert-desc">Your mandatory DPDP cyber hygiene assessment is due on 20 Oct 2024. Please complete it to prevent system account lockouts.</p>
+          </div>
+        </div>
+        <button class="btn btn-warm" style="padding: 0.4rem 0.85rem; font-size: 0.75rem;" onclick="openComplianceSim('comp-cyber')">
+          Resume Module Now
+        </button>
+      </div>
+
+      <!-- Compliance Cards Grid -->
+      <div class="compliance-cards-grid" id="compliance-cards-grid">
+        <!-- Dynamically populated from TC_DATA.complianceModules -->
+      </div>
+    </section>
+
+    <!-- ---------------------------------------------------------------------
+         TAB 6: ENGAGEMENT (GALLERY, NEWSLETTERS & FEEDBACK)
+         --------------------------------------------------------------------- -->
+    <section id="engagement-tab" class="tab-pane">
+      <div class="section-header">
+        <h2 class="section-title"><i class="fa-solid fa-comments"></i> Learning Engagement & Culture</h2>
+        <p class="section-subtitle">Event memories, quarterly newsletters, and your continuous feedback to enhance our learning portal.</p>
+      </div>
+
+      <!-- Engagement Sub-Sections Navigation -->
+      <div class="category-chips-bar" style="margin-bottom: 2rem;">
+        <button class="cat-chip active" onclick="showEngagementSub('gallery')"><i class="fa-solid fa-camera-retro"></i> Training Photo Gallery</button>
+        <button class="cat-chip" onclick="showEngagementSub('newsletter')"><i class="fa-solid fa-newspaper"></i> "The Learning Curve" Newsletter</button>
+        <button class="cat-chip" onclick="showEngagementSub('feedback')"><i class="fa-solid fa-heart"></i> Feedback & Suggestions</button>
+      </div>
+
+      <!-- 1. Photo Gallery Sub-Section -->
+      <div id="eng-sub-gallery" class="eng-sub-pane">
+        <div class="section-header">
+          <h3 class="section-title" style="font-size: 1.25rem;"><i class="fa-solid fa-images"></i> Event Albums & Workshop Moments</h3>
+          <p class="section-subtitle">Moments from recent conclaves, induction batches, and digital innovation sandboxes.</p>
+        </div>
+        <div class="gallery-grid" id="engagement-gallery-grid">
+          <!-- Populated from TC_DATA.engagement.galleryAlbums -->
+        </div>
+      </div>
+
+      <!-- 2. Newsletters Sub-Section -->
+      <div id="eng-sub-newsletter" class="eng-sub-pane" style="display: none;">
+        <div class="section-header">
+          <div class="d-flex justify-between items-center" style="flex-wrap: wrap;">
+            <div>
+              <h3 class="section-title" style="font-size: 1.25rem;"><i class="fa-solid fa-book-open-reader"></i> "The Learning Curve" Quarterly Magazine</h3>
+              <p class="section-subtitle">Official 7-Page L&D Publication • Covering Sherpa spotlights, milestone analytics, regulatory updates, and RnR awards.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openNewsletterReader()">
+              <i class="fa-solid fa-book-open"></i> Open 7-Page Magazine PDF Reader
+            </button>
+          </div>
+        </div>
+
+        <!-- Featured 7-Page Interactive Newsletter Card -->
+        <div class="newsletter-featured-card" style="margin-bottom: 2rem;">
+          <div class="nl-feat-cover" onclick="openNewsletterReader()" style="cursor: pointer;">
+            <div class="nl-feat-badge">LATEST EDITION • Q3 FY26</div>
+            <i class="fa-solid fa-book-open-reader" style="font-size: 4rem; color: #fff; opacity: 0.9;"></i>
+            <div style="font-weight: 700; font-size: 1.1rem; color: #fff; margin-top: 0.5rem;">The Learning Curve</div>
+            <div style="font-size: 0.75rem; color: #cbd5e1;">Edition 14 • 7 Comprehensive Pages</div>
+          </div>
+          <div class="nl-feat-info">
+            <span class="badge badge-recommended" style="margin-bottom: 0.5rem;">7-Page L&D Feature Edition</span>
+            <h3 style="color: var(--tc-primary); font-size: 1.25rem; margin-bottom: 0.35rem;">Building an Agile, Digitally-Empowered Lending Institution</h3>
+            <p style="font-size: 0.85rem; color: var(--text-body); line-height: 1.5; margin-bottom: 1rem;">
+              Complete 7-page edition covering: Foreword by MD & CHRO, Project Sherpa highlights (84 SME Champions), 360° Milestone Roadmaps, RBI Zero-Defect Governance, Digital Underwriting Simulators, and the Q3 Hall of Fame & RnR Winners.
+            </p>
+            <div class="d-flex gap-2" style="flex-wrap: wrap;">
+              <button class="btn btn-primary" onclick="openNewsletterReader()">
+                <i class="fa-solid fa-book-open"></i> Read Full 7-Page PDF
+              </button>
+              <button class="btn btn-secondary" onclick="showToast('Downloading verified 7-Page The Learning Curve Magazine (PDF - 4.8 MB)...')">
+                <i class="fa-solid fa-download"></i> Download PDF Edition (4.8 MB)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="newsletters-grid" id="engagement-newsletters-grid">
+          <!-- Populated from TC_DATA.engagement.newsletters -->
+        </div>
+      </div>
+
+      <!-- 3. Detailed Feedback & Suggestions Form Sub-Section -->
+      <div id="eng-sub-feedback" class="eng-sub-pane" style="display: none;">
+        <div class="feedback-card" style="max-width: 820px; margin: 0 auto; padding: 2rem;">
+          <div style="text-align: center; margin-bottom: 1.5rem;">
+            <span class="badge" style="background: var(--tc-sky-light); color: var(--tc-primary); margin-bottom: 0.35rem;">
+              <i class="fa-solid fa-clipboard-check"></i> Quality Assurance & Learner Voice
+            </span>
+            <h3 style="color: var(--tc-primary); font-size: 1.45rem; margin-top: 0.25rem; margin-bottom: 0.35rem;">
+              <i class="fa-solid fa-comment-dots"></i> Detailed Training Feedback & Suggestions
+            </h3>
+            <p class="text-muted" style="font-size: 0.85rem; max-width: 580px; margin: 0 auto;">
+              Your ratings directly drive trainer accreditation, course curriculum refinements, and new capability modules across all lending verticals.
+            </p>
+          </div>
+
+          <form id="feedback-form" onsubmit="handleFeedbackSubmit(event)">
+            <!-- Section 1: Feedback Purpose & Program Selection -->
+            <div class="feedback-section-block">
+              <h4 class="fb-sec-title"><i class="fa-solid fa-chalkboard-user"></i> 1. Select Training Program & Faculty</h4>
+              <div class="form-grid">
+                <div class="form-group">
+                  <label for="fb-program-select">Attended Training Program *</label>
+                  <select id="fb-program-select" class="form-control" required>
+                    <option value="Credit Appraisal & Financial Scrubbing">Credit Appraisal & Financial Scrubbing (Nov 2026)</option>
+                    <option value="Retail Field Fraud & Risk Detection">Retail Field Fraud & Risk Detection (Nov 2026)</option>
+                    <option value="FinnOne Neo & CRM Systems Mastery">FinnOne Neo & CRM Systems Mastery (Nov 2026)</option>
+                    <option value="RBI Fair Practices Code Refresher">RBI Fair Practices Code Refresher</option>
+                    <option value="Two-Wheeler & Motor Underwriting">Two-Wheeler & Motor Underwriting Masterclass</option>
+                    <option value="Other / General Platform Experience">General Learning Portal Experience</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="fb-faculty-name">Facilitator / Sherpa Name *</label>
+                  <input type="text" id="fb-faculty-name" class="form-control" value="Devendra Kulkarni (Sherpa SME)" required>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 2: Detailed Multi-Dimensional Ratings -->
+            <div class="feedback-section-block">
+              <h4 class="fb-sec-title"><i class="fa-solid fa-star-half-stroke"></i> 2. Detailed Performance Dimensions (1 to 5 Stars)</h4>
+              
+              <div class="fb-rating-row">
+                <div class="fb-rating-label">
+                  <strong>Content Quality & Domain Depth</strong>
+                  <span class="text-muted" style="font-size: 0.75rem;">Relevance of policy, caselets, and lending guidelines</span>
+                </div>
+                <div class="star-rating-box" id="fb-stars-content">
+                  <i class="fa-solid fa-star selected" onclick="setMultiRating('content', 1)"></i>
+                  <i class="fa-solid fa-star selected" onclick="setMultiRating('content', 2)"></i>
+                  <i class="fa-solid fa-star selected" onclick="setMultiRating('content', 3)"></i>
+                  <i class="fa-solid fa-star selected" onclick="setMultiRating('content', 4)"></i>
+                  <i class="fa-solid fa-star selected" onclick="setMultiRating('content', 5)"></i>
+                </div>
+              </div>
+
+              <div class="fb-rating-row">
+                <div class="fb-rating-label">
+                  <strong>Facilitator / Sherpa Interaction & Clarity</strong>
+                  <span class="text-muted" style="font-size: 0.75rem;">Ability to resolve doubts, encourage participation & practical examples</span>
+                </div>
+                <div class="star-rating-box" id="fb-stars-faculty">
+                  <i class="fa-solid fa-star selected" onclick="setMultiRating('faculty', 1)"></i>
+                  <i class="fa-solid fa-star selected" onclick="setMultiRating('faculty', 2)"></i>
+                  <i class="fa-solid fa-star selected" onclick="setMultiRating('faculty', 3)"></i>
+                  <i class="fa-solid fa-star selected" onclick="setMultiRating('faculty', 4)"></i>
+                  <i class="fa-solid fa-star selected" onclick="setMultiRating('faculty', 5)"></i>
+                </div>
+              </div>
+
+              <div class="fb-rating-row">
+                <div class="fb-rating-label">
+                  <strong>Practical Exercises & Simulator Sandbox</strong>
+                  <span class="text-muted" style="font-size: 0.75rem;">Hands-on FOIR calculations, CIBIL scrubbing & software exercises</span>
+                </div>
+                <div class="star-rating-box" id="fb-stars-exercises">
+                  <i class="fa-solid fa-star selected" onclick="setMultiRating('exercises', 1)"></i>
+                  <i class="fa-solid fa-star selected" onclick="setMultiRating('exercises', 2)"></i>
+                  <i class="fa-solid fa-star selected" onclick="setMultiRating('exercises', 3)"></i>
+                  <i class="fa-solid fa-star selected" onclick="setMultiRating('exercises', 4)"></i>
+                  <i class="fa-regular fa-star" onclick="setMultiRating('exercises', 5)"></i>
+                </div>
+              </div>
+
+              <div class="fb-rating-row">
+                <div class="fb-rating-label">
+                  <strong>Overall Portal & Learning Infrastructure</strong>
+                  <span class="text-muted" style="font-size: 0.75rem;">Audio/video clarity, pre-read availability & LMS tracking</span>
+                </div>
+                <div class="star-rating-box" id="fb-stars-platform">
+                  <i class="fa-solid fa-star selected" onclick="setMultiRating('platform', 1)"></i>
+                  <i class="fa-solid fa-star selected" onclick="setMultiRating('platform', 2)"></i>
+                  <i class="fa-solid fa-star selected" onclick="setMultiRating('platform', 3)"></i>
+                  <i class="fa-solid fa-star selected" onclick="setMultiRating('platform', 4)"></i>
+                  <i class="fa-solid fa-star selected" onclick="setMultiRating('platform', 5)"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Section 3: Workplace Impact Assessment -->
+            <div class="feedback-section-block">
+              <h4 class="fb-sec-title"><i class="fa-solid fa-business-time"></i> 3. On-the-Job Turnaround Time (TAT) & File Quality Impact</h4>
+              <div class="form-group">
+                <label>How will this training impact your daily credit sanctioning or sales turnaround time?</label>
+                <select id="fb-tat-impact" class="form-control">
+                  <option value="Significantly Faster (Estimated >25% TAT reduction)">Significantly Faster (Estimated >25% TAT reduction)</option>
+                  <option value="Moderately Faster (Estimated 10-25% TAT reduction)" selected>Moderately Faster (Estimated 10-25% TAT reduction)</option>
+                  <option value="Zero-Defect File Quality (Fewer query rejections from Credit COE)">Zero-Defect File Quality (Fewer query rejections from Credit COE)</option>
+                  <option value="Enhanced Customer Communication & Compliance">Enhanced Customer Communication & Compliance</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Section 4: Suggest New Capabilities -->
+            <div class="feedback-section-block">
+              <h4 class="fb-sec-title"><i class="fa-solid fa-lightbulb"></i> 4. Suggestions for Future Capabilities</h4>
+              <div class="form-group">
+                <label for="fb-new-topic">What new topic, digital simulator, or skill should L&D launch next?</label>
+                <input type="text" id="fb-new-topic" class="form-control" placeholder="e.g. AI-driven GST Analyzer, Electric Two-Wheeler Battery Residual Valuations...">
+              </div>
+              <div class="form-group" style="margin-top: 0.75rem;">
+                <label for="fb-comments">Detailed Comments & Recommendations *</label>
+                <textarea id="fb-comments" class="form-control" rows="3" placeholder="Share specific moments, exercises that worked well, or areas for improvement..." required>The practical personal discussion (PD) caselet was extremely helpful. Suggest adding more live samples from informal income customer segments.</textarea>
+              </div>
+            </div>
+
+            <!-- Section 5: Anonymous Submission Toggle -->
+            <div style="background: var(--bg-surface-alt); padding: 0.85rem; border-radius: var(--radius-sm); margin-bottom: 1.5rem;">
+              <label class="checkbox-label" style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                <input type="checkbox" id="fb-anonymous-check">
+                <span><strong>Submit Anonymously:</strong> Do not include my name (Siddik Ghaniwala) or Employee ID on the trainer evaluation dashboard.</span>
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 0.95rem;">
+              <i class="fa-solid fa-paper-plane"></i> Submit Comprehensive Feedback & Claim L&D Credits
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------------------------------------------------------------------
+         TAB 7: DASHBOARD (EMPLOYEE 360-DEGREE VIEW & PRINT SUMMARY)
+         --------------------------------------------------------------------- -->
+    <section id="dashboard-tab" class="tab-pane">
+      <!-- 5-Tier Executive & Role Selector for Dashboard -->
+      <div class="dashboard-mode-selector-wrap no-print">
+        <div class="dashboard-mode-pills">
+          <button class="dash-mode-pill active" id="btn-dashmode-employee" onclick="setDashboardViewMode('employee')">
+            <i class="fa-solid fa-user-graduate"></i> Employee 360°
+          </button>
+          <button class="dash-mode-pill" id="btn-dashmode-manager" onclick="setDashboardViewMode('manager')">
+            <i class="fa-solid fa-users-gear"></i> Manager Team View
+          </button>
+          <button class="dash-mode-pill" id="btn-dashmode-reviewer" onclick="setDashboardViewMode('reviewer')">
+            <i class="fa-solid fa-clipboard-check"></i> Reviewer Dashboard
+          </button>
+          <button class="dash-mode-pill" id="btn-dashmode-bizhead" onclick="setDashboardViewMode('biz_head')">
+            <i class="fa-solid fa-motorcycle"></i> Business Head (Sample Two-Wheeler / Retail)
+          </button>
+          <button class="dash-mode-pill" id="btn-dashmode-coohr" onclick="setDashboardViewMode('coo_hr')">
+            <i class="fa-solid fa-briefcase"></i> COO Dashboard / Head HR Dashboard
+          </button>
+          <button class="dash-mode-pill" id="btn-dashmode-mdchro" onclick="setDashboardViewMode('md_chro')">
+            <i class="fa-solid fa-chess-king"></i> MD & CHRO Executive View
+          </button>
+        </div>
+        <div class="dash-mode-hint" id="dash-mode-hint-text">
+          <i class="fa-solid fa-circle-info"></i> Viewing individual capability scorecard and personal milestone completion.
+        </div>
+      </div>
+
+      <!-- Container 1: Employee Dashboard Content -->
+      <div id="employee-dashboard-container">
+        <div class="d-flex items-center justify-between no-print" style="margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h2 class="section-title"><i class="fa-solid fa-chart-pie"></i> Employee 360° Learning Dashboard</h2>
+            <p class="section-subtitle">Real-time metrics tracking your assigned courses, milestone progress, and compliance scorecard.</p>
+          </div>
+          <button class="btn btn-secondary" onclick="printEmployeeSummary()">
+            <i class="fa-solid fa-print"></i> Download / Print Summary
+          </button>
+        </div>
+
+        <!-- KPI Cards Grid -->
+        <div class="kpi-cards-grid">
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-num" id="kpi-assigned-count">14</div>
+              <div class="kpi-title">Assigned Courses</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #eff6ff; color: #1d4ed8;">
+              <i class="fa-solid fa-book-bookmark"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-num" id="kpi-completed-count" style="color: var(--status-completed);">11</div>
+              <div class="kpi-title">Completed</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #ecfdf5; color: #047857;">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-num" id="kpi-pending-count" style="color: var(--status-in-progress);">3</div>
+              <div class="kpi-title">In Progress</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #fffbeb; color: #b45309;">
+              <i class="fa-solid fa-hourglass-half"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-num" id="kpi-compliance-pct" style="color: var(--tc-primary);">78%</div>
+              <div class="kpi-title">Compliance Rate</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #fdf2f8; color: #be185d;">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Journey Progress Widget (Milestones completion 30/60/90/180/360) -->
+        <div class="journey-progress-widget">
+          <h3 class="block-title"><i class="fa-solid fa-bars-progress"></i> Journey Milestone Progress</h3>
+          <p class="text-muted" style="font-size: 0.8rem;">Your progress across each milestone of your Tata Capital tenure.</p>
+          
+          <div class="milestone-mini-bars" id="dashboard-milestone-mini-bars">
+          <div class="mini-bar-item">
+            <div class="d-flex justify-between" style="font-size: 0.75rem; margin-bottom: 0.25rem;">
+              <strong>30 Days</strong>
+              <span class="font-bold" style="color: var(--status-completed);">100%</span>
+            </div>
+            <div class="progress-bar-outer" style="height: 6px;">
+              <div class="progress-bar-inner" style="width: 100%;"></div>
+            </div>
+          </div>
+
+          <div class="mini-bar-item">
+            <div class="d-flex justify-between" style="font-size: 0.75rem; margin-bottom: 0.25rem;">
+              <strong>60 Days (Current)</strong>
+              <span class="font-bold" style="color: var(--status-in-progress);">65%</span>
+            </div>
+            <div class="progress-bar-outer" style="height: 6px;">
+              <div class="progress-bar-inner" style="width: 65%;"></div>
+            </div>
+          </div>
+
+          <div class="mini-bar-item">
+            <div class="d-flex justify-between" style="font-size: 0.75rem; margin-bottom: 0.25rem;">
+              <strong>90 Days</strong>
+              <span class="font-bold text-muted">20%</span>
+            </div>
+            <div class="progress-bar-outer" style="height: 6px;">
+              <div class="progress-bar-inner" style="width: 20%;"></div>
+            </div>
+          </div>
+
+          <div class="mini-bar-item">
+            <div class="d-flex justify-between" style="font-size: 0.75rem; margin-bottom: 0.25rem;">
+              <strong>180 Days</strong>
+              <span class="font-bold text-muted">0%</span>
+            </div>
+            <div class="progress-bar-outer" style="height: 6px;">
+              <div class="progress-bar-inner" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <div class="mini-bar-item">
+            <div class="d-flex justify-between" style="font-size: 0.75rem; margin-bottom: 0.25rem;">
+              <strong>360+ Days</strong>
+              <span class="font-bold text-muted">0%</span>
+            </div>
+            <div class="progress-bar-outer" style="height: 6px;">
+              <div class="progress-bar-inner" style="width: 0%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts Grid (Chart.js) -->
+      <div class="charts-grid">
+        <!-- Doughnut Chart: Status Split -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h4 style="font-size: 0.95rem; color: var(--tc-primary);"><i class="fa-solid fa-chart-donut"></i> Training Status Breakdown</h4>
+            <span class="badge badge-tag">FY25</span>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="statusDoughnutChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Bar Chart: Month-wise Completion -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h4 style="font-size: 0.95rem; color: var(--tc-primary);"><i class="fa-solid fa-chart-column"></i> Monthly Learning Velocity</h4>
+            <span class="badge badge-tag">Completed Hours</span>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="monthlyBarChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Completed Trainings Table -->
+      <div class="schedule-table-wrap">
+        <div style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+          <h4 style="color: var(--tc-primary); font-size: 0.95rem;"><i class="fa-solid fa-clock-rotate-left"></i> Recently Completed Learning Records</h4>
+          <span class="text-muted" style="font-size: 0.75rem;">Verified via LMS Engine</span>
+        </div>
+        <table class="corporate-table">
+          <thead>
+            <tr>
+              <th>Course / Workshop Title</th>
+              <th>Category</th>
+              <th>Date Completed</th>
+              <th>Score / Grade</th>
+              <th>Certificate</th>
+            </tr>
+          </thead>
+          <tbody id="dashboard-recent-trainings-tbody">
+            <!-- Populated from recent courses in app.js -->
+          </tbody>
+        </table>
+      </div>
+      </div><!-- End #employee-dashboard-container -->
+
+      <!-- Container 2: Manager Dashboard Content (Available right in Dashboard tab!) -->
+      <div id="manager-dashboard-container" style="display: none;">
+        <div class="d-flex items-center justify-between no-print" style="margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <span class="badge" style="background: var(--tc-warm); color: #fff; margin-bottom: 0.35rem;">
+              <i class="fa-solid fa-shield-halved"></i> Manager Dashboard
+            </span>
+            <h2 class="section-title"><i class="fa-solid fa-users-gear"></i> Team 360° Capability & Progress View</h2>
+            <p class="section-subtitle">Real-time team milestones tracking, compliance health, overdue remediation, and direct reminder actions.</p>
+          </div>
+          <button class="btn btn-warm" onclick="openSendReminderModal()">
+            <i class="fa-solid fa-paper-plane"></i> Send Team Reminder
+          </button>
+        </div>
+
+        <!-- Manager Team Overview KPI Cards -->
+        <div class="kpi-cards-grid">
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-num" id="dash-mgr-team-size">12</div>
+              <div class="kpi-title">Direct Reports</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #eff6ff; color: #1d4ed8;">
+              <i class="fa-solid fa-users"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-num" id="dash-mgr-completion-rate" style="color: var(--status-completed);">84.2%</div>
+              <div class="kpi-title">Team Completion Rate</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #ecfdf5; color: #047857;">
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-num" id="dash-mgr-overdue-count" style="color: var(--status-overdue);">2</div>
+              <div class="kpi-title">Overdue Members</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #fef2f2; color: #dc2626;">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-num" id="dash-mgr-sherpas-count" style="color: var(--tc-warm);">2</div>
+              <div class="kpi-title">Active Sherpas</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #fef3c7; color: #b45309;">
+              <i class="fa-solid fa-person-chalkboard"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Team Journey View (Distribution Stepper) -->
+        <div class="manager-stepper-distribution">
+          <div class="d-flex justify-between items-center" style="flex-wrap: wrap;">
+            <div>
+              <h3 class="block-title" style="margin-bottom: 0.2rem;"><i class="fa-solid fa-people-arrows"></i> Team Journey Distribution (Who is Where?)</h3>
+              <p class="text-muted" style="font-size: 0.8rem;">Count of team members progressing through each milestone.</p>
+            </div>
+            <span class="badge badge-tag">2 Behind Schedule</span>
+          </div>
+
+          <div class="stepper-dist-grid" id="dash-mgr-stepper-dist-grid">
+            <!-- Populated from TC_DATA.managerData.milestoneDistribution -->
+          </div>
+        </div>
+
+        <!-- Team Member Filters & Search -->
+        <div class="trainings-filter-bar">
+          <div class="search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" id="dash-mgr-search-input" placeholder="Search team member by name or designation..." oninput="onFilterTeamMembersDash()">
+          </div>
+
+          <div class="filter-selects">
+            <select class="filter-select" id="dash-mgr-filter-milestone" onchange="onFilterTeamMembersDash()" title="Filter by Milestone">
+              <option value="all">All Milestones</option>
+              <option value="30 Days">30 Days</option>
+              <option value="60 Days">60 Days</option>
+              <option value="90 Days">90 Days</option>
+              <option value="180 Days">180 Days</option>
+              <option value="360+ Days">360+ Days</option>
+            </select>
+
+            <select class="filter-select" id="dash-mgr-filter-status" onchange="onFilterTeamMembersDash()" title="Filter by Status">
+              <option value="all">All Statuses</option>
+              <option value="overdue">Overdue Only</option>
+              <option value="compliant">Compliant</option>
+              <option value="sherpa">Sherpas Only</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Team Members Table -->
+        <div class="schedule-table-wrap">
+          <table class="corporate-table">
+            <thead>
+              <tr>
+                <th>Team Member</th>
+                <th>Business Vertical</th>
+                <th>Current Stage</th>
+                <th>Courses Completed</th>
+                <th>Compliance Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="dash-mgr-team-table-tbody">
+              <!-- Populated from TC_DATA.managerData.teamMembers -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Team Compliance Distribution Chart -->
+        <div class="charts-grid" style="margin-top: 2rem;">
+          <div class="chart-card" style="grid-column: 1 / -1;">
+            <div class="chart-card-header">
+              <h4 style="font-size: 0.95rem; color: var(--tc-primary);"><i class="fa-solid fa-shield-virus"></i> Team Compliance Breakdown by Module</h4>
+              <span class="badge badge-tag">Target: 100%</span>
+            </div>
+            <div class="chart-canvas-wrap">
+              <canvas id="dashTeamComplianceBarChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div><!-- End #manager-dashboard-container -->
+
+      <!-- =========================================================================
+           CONTAINER 3: REVIEWER DASHBOARD (CLUSTER / AREA MANAGER)
+           ========================================================================= -->
+      <div id="reviewer-dashboard-container" style="display: none;">
+        <div class="d-flex items-center justify-between no-print" style="margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <span class="badge" style="background: linear-gradient(135deg, #0d9488, #0f766e); color: #fff; margin-bottom: 0.35rem;">
+              <i class="fa-solid fa-clipboard-check"></i> Reviewer Dashboard • Area & Cluster Level
+            </span>
+            <h2 class="section-title"><i class="fa-solid fa-network-wired"></i> Cluster Capability & Reviewer Audit</h2>
+            <p class="section-subtitle">Supervising 4 Key Regional Clusters (Mumbai Central, Pune, Gujarat, Goa) • 38 Branches • 412 Lending Staff</p>
+          </div>
+          <button class="btn btn-primary" onclick="approveAllPendingAccreditations()">
+            <i class="fa-solid fa-circle-check"></i> Approve All Verified (14)
+          </button>
+        </div>
+
+        <!-- Reviewer KPI Overview Cards -->
+        <div class="kpi-cards-grid">
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-num" id="rev-total-branches">38</div>
+              <div class="kpi-title">Supervised Branches</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #f0fdfa; color: #0d9488;">
+              <i class="fa-solid fa-building-columns"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-num" id="rev-total-learners">412</div>
+              <div class="kpi-title">Active Field Learners</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #eff6ff; color: #1d4ed8;">
+              <i class="fa-solid fa-users"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-num" id="rev-avg-compliance" style="color: var(--status-completed);">91.4%</div>
+              <div class="kpi-title">Cluster Compliance</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #ecfdf5; color: #047857;">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-num" id="rev-pending-approvals" style="color: var(--tc-warm);">14</div>
+              <div class="kpi-title">Accreditations Awaiting Sign-Off</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #fef3c7; color: #b45309;">
+              <i class="fa-solid fa-stamp"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Regional Cluster Health Breakdown -->
+        <div class="section-header" style="margin-top: 2rem;">
+          <h3 class="section-title"><i class="fa-solid fa-map-location-dot"></i> Regional Cluster Performance Matrix</h3>
+          <p class="section-subtitle">Audit health, milestone progress, and Sherpa mentor density across the 4 clusters.</p>
+        </div>
+        <div class="clusters-grid" id="reviewer-clusters-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+          <!-- Dynamically populated from TC_DATA.reviewerData.clusters -->
+        </div>
+
+        <!-- Pending Accreditation Sign-Offs Table -->
+        <div class="schedule-table-wrap">
+          <div style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+              <h4 style="color: var(--tc-primary); font-size: 0.95rem; margin-bottom: 0.15rem;">
+                <i class="fa-solid fa-certificate"></i> Pending Accreditation Approvals & Reviewer Sign-Offs
+              </h4>
+              <p class="text-muted" style="font-size: 0.75rem;">Credit officers and sales executives awaiting your audit sign-off.</p>
+            </div>
+            <span class="badge badge-tag"><i class="fa-solid fa-shield-heart"></i> L&D Verification Verified</span>
+          </div>
+          <table class="corporate-table">
+            <thead>
+              <tr>
+                <th>Learner Name & ID</th>
+                <th>Cluster / Branch</th>
+                <th>Certification Course</th>
+                <th>Assessment Score</th>
+                <th>Submitted On</th>
+                <th>Reviewer Action</th>
+              </tr>
+            </thead>
+            <tbody id="reviewer-approvals-tbody">
+              <!-- Populated dynamically in app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div><!-- End #reviewer-dashboard-container -->
+
+      <!-- =========================================================================
+           CONTAINER 4: BUSINESS HEAD DASHBOARD (TWO-WHEELER & RETAIL VERTICAL)
+           ========================================================================= -->
+      <div id="bizhead-dashboard-container" style="display: none;">
+        <div class="d-flex items-center justify-between no-print" style="margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <span class="badge" style="background: linear-gradient(135deg, #4f46e5, #4338ca); color: #fff; margin-bottom: 0.35rem;">
+              <i class="fa-solid fa-motorcycle"></i> Business Head Dashboard • Two-Wheeler & Retail Finance
+            </span>
+            <h2 class="section-title"><i class="fa-solid fa-chart-line-up"></i> Vertical Capability & Branch Readiness Scorecard</h2>
+            <p class="section-subtitle">Strategic leadership view for Business Heads: credit underwriting accreditation, field TAT, and pan-India training ROI.</p>
+          </div>
+          <button class="btn btn-warm" onclick="showToast('Exporting Two-Wheeler & Retail Business L&D Scorecard (PDF)...')">
+            <i class="fa-solid fa-file-arrow-down"></i> Export Business Review
+          </button>
+        </div>
+
+        <!-- Business Head KPI Overview -->
+        <div class="kpi-cards-grid">
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-num" id="bizhead-headcount">1,280</div>
+              <div class="kpi-title">Vertical Headcount</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #eef2ff; color: #4f46e5;">
+              <i class="fa-solid fa-users-viewfinder"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-num" id="bizhead-certified-pct" style="color: var(--status-completed);">92.6%</div>
+              <div class="kpi-title">Certified Underwriters</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #ecfdf5; color: #047857;">
+              <i class="fa-solid fa-award"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-num" id="bizhead-training-hours" style="color: var(--tc-sky);">18,450</div>
+              <div class="kpi-title">Total Learning Hours</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #f0f9ff; color: #0284c7;">
+              <i class="fa-solid fa-hourglass-end"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div>
+              <div class="kpi-num" id="bizhead-sherpa-clinics" style="color: var(--tc-warm);">46</div>
+              <div class="kpi-title">Sherpa Branch Clinics</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #fef3c7; color: #b45309;">
+              <i class="fa-solid fa-person-chalkboard"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zonal Accreditation Index & High-Impact Programs -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; margin-bottom: 2rem;">
+          <!-- Zonal Accreditation Progress -->
+          <div class="journey-progress-widget" style="margin-top: 0;">
+            <div class="d-flex justify-between items-center" style="margin-bottom: 0.5rem;">
+              <h3 class="block-title" style="margin-bottom: 0;"><i class="fa-solid fa-compass-drafting"></i> Zonal Underwriter Accreditation</h3>
+              <span class="badge badge-tag">Pan-India</span>
+            </div>
+            <p class="text-muted" style="font-size: 0.8rem; margin-bottom: 1rem;">Accredited branch staff authorized for independent credit sanctioning.</p>
+            <div id="bizhead-zonal-bars">
+              <!-- Rendered in app.js -->
+            </div>
+          </div>
+
+          <!-- Critical Business Programs & Business Impact -->
+          <div class="schedule-table-wrap" style="margin-top: 0; padding: 1.25rem;">
+            <div class="d-flex justify-between items-center" style="margin-bottom: 0.75rem;">
+              <h4 style="color: var(--tc-primary); font-size: 0.95rem; margin-bottom: 0;"><i class="fa-solid fa-arrow-trend-up"></i> Critical Business Interventions & ROI</h4>
+              <span class="badge badge-completed">High Impact</span>
+            </div>
+            <div id="bizhead-critical-programs" style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <!-- Rendered in app.js -->
+            </div>
+          </div>
+        </div>
+      </div><!-- End #bizhead-dashboard-container -->
+
+      <!-- =========================================================================
+           CONTAINER 5: COO & HEAD HR ENTERPRISE DASHBOARD
+           ========================================================================= -->
+      <div id="coohr-dashboard-container" style="display: none;">
+        <div class="d-flex items-center justify-between no-print" style="margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <span class="badge" style="background: linear-gradient(135deg, #1e293b, #0f172a); color: #38bdf8; margin-bottom: 0.35rem; border: 1px solid rgba(56, 189, 248, 0.3);">
+              <i class="fa-solid fa-building-user"></i> Business Unit & Retail Operations • COO & Head HR View
+            </span>
+            <h2 class="section-title"><i class="fa-solid fa-chess-queen"></i> COO Dashboard / Head HR Dashboard</h2>
+            <p class="section-subtitle">Retail Finance & BU Operations learning health, operational readiness, compliance index, and cluster capability matrix.</p>
+          </div>
+          <button class="btn btn-primary" onclick="showToast('Generating Board Governance L&D Deck...')">
+            <i class="fa-solid fa-file-invoice"></i> Download Board Deck
+          </button>
+        </div>
+
+        <!-- COO & Head HR Enterprise KPI Cards -->
+        <div class="kpi-cards-grid">
+          <div class="kpi-card" style="border-top: 3px solid var(--tc-primary);">
+            <div>
+              <div class="kpi-num" id="coo-headcount">1,840</div>
+              <div class="kpi-title">Active Enterprise Workforce</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #eff6ff; color: #1d4ed8;">
+              <i class="fa-solid fa-users-rays"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card" style="border-top: 3px solid #059669;">
+            <div>
+              <div class="kpi-num" id="coo-compliance-index" style="color: var(--status-completed);">94.8%</div>
+              <div class="kpi-title">Enterprise Compliance Index</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #ecfdf5; color: #047857;">
+              <i class="fa-solid fa-scale-balanced"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card" style="border-top: 3px solid var(--tc-warm);">
+            <div>
+              <div class="kpi-num" id="coo-audit-readiness" style="color: var(--tc-warm);">100%</div>
+              <div class="kpi-title">RBI Regulatory Audit Readiness</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #fef3c7; color: #b45309;">
+              <i class="fa-solid fa-shield-halved"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card" style="border-top: 3px solid #8b5cf6;">
+            <div>
+              <div class="kpi-num" id="coo-sherpas-count" style="color: #7c3aed;">84</div>
+              <div class="kpi-title">Active Sherpa SME Champions</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #f5f3ff; color: #7c3aed;">
+              <i class="fa-solid fa-award"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Business-Wise Performance Comparison Table -->
+        <div class="schedule-table-wrap" style="margin-top: 2rem;">
+          <div style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+              <h4 style="color: var(--tc-primary); font-size: 0.95rem; margin-bottom: 0.15rem;">
+                <i class="fa-solid fa-table-columns"></i> Lending Business Units Capability & Compliance Matrix
+              </h4>
+              <p class="text-muted" style="font-size: 0.75rem;">Consolidated performance metrics across all 9 business verticals.</p>
+            </div>
+            <span class="badge badge-tag"><i class="fa-solid fa-arrows-rotate"></i> Real-time LMS Sync</span>
+          </div>
+          <table class="corporate-table">
+            <thead>
+              <tr>
+                <th>Lending Business Unit</th>
+                <th>Active Headcount</th>
+                <th>Compliance Index</th>
+                <th>Accredited Staff</th>
+                <th>Active Sherpas</th>
+                <th>L&D Audit Health</th>
+              </tr>
+            </thead>
+            <tbody id="coo-bu-performance-tbody">
+              <!-- Populated dynamically in app.js -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Enterprise Strategic L&D Pillars -->
+        <div class="section-header" style="margin-top: 2rem;">
+          <h3 class="section-title"><i class="fa-solid fa-cubes-stacked"></i> Enterprise Strategic L&D Pillars</h3>
+          <p class="section-subtitle">Long-term capability building driving institutional resilience, risk mitigation, and digital excellence.</p>
+        </div>
+        <div class="benefits-grid" id="coo-pillars-grid" style="margin-bottom: 2rem;">
+          <!-- Populated in app.js -->
+        </div>
+      </div><!-- End #coohr-dashboard-container -->
+
+      <!-- =========================================================================
+           CONTAINER 6: MD & CHRO EXECUTIVE BOARD VIEW
+           ========================================================================= -->
+      <div id="mdchro-dashboard-container" style="display: none;">
+        <div class="d-flex items-center justify-between no-print" style="margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <span class="badge" style="background: linear-gradient(135deg, #1e1b4b, #312e81); color: #e0e7ff; margin-bottom: 0.35rem; border: 1px solid rgba(199, 210, 254, 0.3);">
+              <i class="fa-solid fa-chess-king"></i> Apex Board Governance • Managing Director & CHRO Suite
+            </span>
+            <h2 class="section-title"><i class="fa-solid fa-award"></i> Tata Capital Strategic Talent & Capability Governance</h2>
+            <p class="section-subtitle">Board-level human capital assurance, talent retention ROI, and executive succession bench across all 9 lending verticals.</p>
+          </div>
+          <button class="btn btn-primary" onclick="showToast('Exporting Board L&D Resolution & Talent Charter (PDF)...')">
+            <i class="fa-solid fa-file-pdf"></i> Download Board Charter
+          </button>
+        </div>
+
+        <!-- MD & CHRO Apex KPI Cards -->
+        <div class="kpi-cards-grid">
+          <div class="kpi-card" style="border-top: 3px solid #4338ca;">
+            <div>
+              <div class="kpi-num" id="md-total-headcount">2,450</div>
+              <div class="kpi-title">Human Capital Covered (100%)</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #eef2ff; color: #4338ca;">
+              <i class="fa-solid fa-users-viewfinder"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card" style="border-top: 3px solid var(--status-completed);">
+            <div>
+              <div class="kpi-num" id="md-retention-lift" style="color: var(--status-completed);">+14.2%</div>
+              <div class="kpi-title">Retention Lift in Certified Cohorts</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #ecfdf5; color: #047857;">
+              <i class="fa-solid fa-arrow-trend-up"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card" style="border-top: 3px solid var(--tc-warm);">
+            <div>
+              <div class="kpi-num" id="md-succession-pipeline" style="color: var(--tc-warm);">94</div>
+              <div class="kpi-title">Succession Leadership Bench</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #fef3c7; color: #b45309;">
+              <i class="fa-solid fa-people-roof"></i>
+            </div>
+          </div>
+
+          <div class="kpi-card" style="border-top: 3px solid #0284c7;">
+            <div>
+              <div class="kpi-num" id="md-rbi-audit" style="color: #0284c7;">100%</div>
+              <div class="kpi-title">Clean RBI Audit Assurance</div>
+            </div>
+            <div class="kpi-icon-wrap" style="background: #f0f9ff; color: #0284c7;">
+              <i class="fa-solid fa-shield-check"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Managing Director's Strategic Directive Card -->
+        <div class="sherpa-hero" style="margin-top: 2rem; background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); border: 1px solid rgba(99, 102, 241, 0.25);">
+          <div class="sherpa-hero-content">
+            <span class="badge" style="background: rgba(99, 102, 241, 0.2); color: #c7d2fe; border: 1px solid rgba(199, 210, 254, 0.3);">
+              <i class="fa-solid fa-quote-left"></i> Strategic Directive from Managing Director & CEO
+            </span>
+            <h3 style="color: #ffffff; font-size: 1.35rem; margin-top: 0.5rem; margin-bottom: 0.5rem;">
+              "Building India's Most Agile, Digitally Empowered, Governance-Led Institution"
+            </h3>
+            <p style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.6; max-width: 820px; font-style: italic;">
+              "Our human capital is our ultimate competitive moat. As Tata Capital scales toward unprecedented milestones, every underwriter, relationship manager, and operations officer must possess 360-degree capability, uncompromising ethical integrity, and deep domain mastery. Project Sherpa exemplifies the Tata philosophy of 'Leaders Developing Leaders' from within."
+            </p>
+            <div style="margin-top: 0.75rem; font-weight: 700; color: #38bdf8; font-size: 0.85rem;">
+              — Rajiv Sabharwal • Managing Director & CEO, Tata Capital Limited
+            </div>
+          </div>
+        </div>
+
+        <!-- Board-Level Vertical Talent & Retention Matrix -->
+        <div class="schedule-table-wrap" style="margin-top: 2rem;">
+          <div style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+              <h4 style="color: var(--tc-primary); font-size: 0.95rem; margin-bottom: 0.15rem;">
+                <i class="fa-solid fa-table-cells"></i> Vertical Capability & Talent Retention Scorecard (Board Review)
+              </h4>
+              <p class="text-muted" style="font-size: 0.75rem;">Verified correlation between L&D accreditation and business performance.</p>
+            </div>
+            <span class="badge badge-completed"><i class="fa-solid fa-circle-check"></i> Governance Cleared</span>
+          </div>
+          <table class="corporate-table">
+            <thead>
+              <tr>
+                <th>Lending Business Vertical</th>
+                <th>Workforce</th>
+                <th>Accredited Underwriters</th>
+                <th>Sherpa Champions</th>
+                <th>Talent Retention Lift</th>
+                <th>RBI Audit Status</th>
+              </tr>
+            </thead>
+            <tbody id="md-vertical-scorecard-tbody">
+              <!-- Populated dynamically in app.js -->
+            </tbody>
+          </table>
+        </div>
+      </div><!-- End #mdchro-dashboard-container -->
+    </section>
+
+    <!-- ---------------------------------------------------------------------
+         TAB 8: MANAGER VIEW (VISIBLE ONLY WHEN ROLE = 'MANAGER')
+         --------------------------------------------------------------------- -->
+    <section id="manager-tab" class="tab-pane">
+      <div class="section-header">
+        <div class="d-flex items-center justify-between" style="flex-wrap: wrap;">
+          <div>
+            <span class="badge" style="background: var(--tc-warm); color: #fff; margin-bottom: 0.35rem;">
+              <i class="fa-solid fa-shield-halved"></i> Manager Dashboard
+            </span>
+            <h2 class="section-title"><i class="fa-solid fa-users-gear"></i> Team 360° Learning View</h2>
+            <p class="section-subtitle">Monitor team milestones, identify overdue learners, and send automated reminders.</p>
+          </div>
+          <button class="btn btn-warm" onclick="openSendReminderModal()">
+            <i class="fa-solid fa-paper-plane"></i> Send Team Reminder
+          </button>
+        </div>
+      </div>
+
+      <!-- Team Overview KPI Cards -->
+      <div class="kpi-cards-grid">
+        <div class="kpi-card">
+          <div>
+            <div class="kpi-num" id="mgr-team-size">12</div>
+            <div class="kpi-title">Direct Reports</div>
+          </div>
+          <div class="kpi-icon-wrap" style="background: #eff6ff; color: #1d4ed8;">
+            <i class="fa-solid fa-users"></i>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div>
+            <div class="kpi-num" id="mgr-completion-rate" style="color: var(--status-completed);">84.2%</div>
+            <div class="kpi-title">Team Completion Rate</div>
+          </div>
+          <div class="kpi-icon-wrap" style="background: #ecfdf5; color: #047857;">
+            <i class="fa-solid fa-chart-line"></i>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div>
+            <div class="kpi-num" id="mgr-overdue-count" style="color: var(--status-overdue);">2</div>
+            <div class="kpi-title">Overdue Members</div>
+          </div>
+          <div class="kpi-icon-wrap" style="background: #fef2f2; color: #dc2626;">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div>
+            <div class="kpi-num" id="mgr-sherpas-count" style="color: var(--tc-warm);">2</div>
+            <div class="kpi-title">Active Sherpas</div>
+          </div>
+          <div class="kpi-icon-wrap" style="background: #fef3c7; color: #b45309;">
+            <i class="fa-solid fa-person-chalkboard"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Team Journey View (Distribution Stepper) -->
+      <div class="manager-stepper-distribution">
+        <div class="d-flex justify-between items-center" style="flex-wrap: wrap;">
+          <div>
+            <h3 class="block-title" style="margin-bottom: 0.2rem;"><i class="fa-solid fa-people-arrows"></i> Team Journey Distribution (Who is Where?)</h3>
+            <p class="text-muted" style="font-size: 0.8rem;">Count of team members currently progressing through each milestone.</p>
+          </div>
+          <span class="badge badge-tag">2 Behind Schedule</span>
+        </div>
+
+        <div class="stepper-dist-grid" id="mgr-stepper-distribution-grid">
+          <!-- Populated from TC_DATA.managerData.milestoneDistribution -->
+        </div>
+      </div>
+
+      <!-- Team Member Filters & Search -->
+      <div class="trainings-filter-bar">
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="mgr-search-input" placeholder="Search team member by name or designation..." oninput="onFilterTeamMembers()">
+        </div>
+
+        <div class="filter-selects">
+          <select class="filter-select" id="mgr-filter-milestone" onchange="onFilterTeamMembers()" title="Filter by Milestone">
+            <option value="all">All Milestones</option>
+            <option value="30 Days">30 Days</option>
+            <option value="60 Days">60 Days</option>
+            <option value="90 Days">90 Days</option>
+            <option value="180 Days">180 Days</option>
+            <option value="360+ Days">360+ Days</option>
+          </select>
+
+          <select class="filter-select" id="mgr-filter-status" onchange="onFilterTeamMembers()" title="Filter by Status">
+            <option value="all">All Statuses</option>
+            <option value="overdue">Overdue Only</option>
+            <option value="compliant">Compliant</option>
+            <option value="sherpa">Sherpas Only</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Team Members Table -->
+      <div class="schedule-table-wrap">
+        <table class="corporate-table">
+          <thead>
+            <tr>
+              <th>Team Member</th>
+              <th>Business Vertical</th>
+              <th>Current Stage</th>
+              <th>Courses Completed</th>
+              <th>Compliance Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="mgr-team-table-tbody">
+            <!-- Populated from TC_DATA.managerData.teamMembers -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Team Compliance Distribution Chart -->
+      <div class="charts-grid" style="margin-top: 2rem;">
+        <div class="chart-card" style="grid-column: 1 / -1;">
+          <div class="chart-card-header">
+            <h4 style="font-size: 0.95rem; color: var(--tc-primary);"><i class="fa-solid fa-shield-virus"></i> Team Compliance Breakdown by Module</h4>
+            <span class="badge badge-tag">Target: 100%</span>
+          </div>
+          <div class="chart-canvas-wrap">
+            <canvas id="teamComplianceBarChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       MODALS & OVERLAYS
+       ========================================================================= -->
+
+  <!-- 1. Training Details Modal -->
+  <div class="modal-overlay" id="training-detail-modal" onclick="closeModalOnBackdrop(event, 'training-detail-modal')">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-course-title">Training Course Details</h3>
+        <button class="modal-close-btn" onclick="closeModal('training-detail-modal')" aria-label="Close modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="modal-body" id="modal-course-body">
+        <!-- Content injected dynamically by showCourseDetails(courseId) -->
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('training-detail-modal')">Close</button>
+        <button class="btn btn-primary" id="modal-course-action-btn" onclick="handleCourseEnrollAction()">
+          <i class="fa-solid fa-file-signature"></i> Enrol Now
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Image Lightbox Modal -->
+  <div class="modal-overlay" id="lightbox-modal" onclick="closeModalOnBackdrop(event, 'lightbox-modal')">
+    <div class="modal-card lightbox-card">
+      <div class="modal-header">
+        <h3 class="modal-title" id="lightbox-title">Image Preview</h3>
+        <button class="modal-close-btn" onclick="closeModal('lightbox-modal')" style="color: #fff;" aria-label="Close modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body" style="padding: 1rem;">
+        <div class="lightbox-img-wrap">
+          <img src="" alt="" id="lightbox-img">
+        </div>
+        <p id="lightbox-caption" style="margin-top: 0.75rem; font-size: 0.85rem; color: #cbd5e1;"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Send Reminder Modal (Manager) -->
+  <div class="modal-overlay" id="reminder-modal" onclick="closeModalOnBackdrop(event, 'reminder-modal')">
+    <div class="modal-card" style="max-width: 520px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-bell"></i> Send Learning Reminder</h3>
+        <button class="modal-close-btn" onclick="closeModal('reminder-modal')" aria-label="Close modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: var(--text-body); margin-bottom: 1rem;">
+          Send an automated notification and nudge email to team members who have pending mandatory compliance or overdue courses.
+        </p>
+
+        <div class="form-group" style="margin-bottom: 1rem;">
+          <label class="font-semibold" style="font-size: 0.8rem;">Recipients:</label>
+          <div style="background: var(--bg-surface-alt); padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.8rem;">
+            <div><strong>Sneha Nair</strong> - Overdue (DPDP Act)</div>
+            <div style="margin-top: 0.25rem;"><strong>Ananya Iyer</strong> - Overdue (Fair Practices Code)</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="reminder-note" class="font-semibold" style="font-size: 0.8rem;">Custom Note to Learners:</label>
+          <textarea id="reminder-note" class="form-control" rows="3">Hi team, please ensure you complete your pending compliance modules before the upcoming regulatory audit cutoff. Thank you!</textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('reminder-modal')">Cancel</button>
+        <button class="btn btn-warm" onclick="sendTeamReminders()">
+          <i class="fa-solid fa-paper-plane"></i> Send Reminders Now
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Interactive E-Learning Module & Video Player Modal -->
+  <div class="modal-overlay" id="elearning-player-modal" onclick="closeModalOnBackdrop(event, 'elearning-player-modal')">
+    <div class="modal-card elearning-player-card" style="max-width: 820px; width: 95%;">
+      <div class="modal-header">
+        <div class="d-flex items-center gap-2" style="flex-wrap: wrap;">
+          <span class="badge" id="elplayer-badge" style="background: var(--tc-sky); color: #fff;">E-Learning Module</span>
+          <h3 class="modal-title" id="elplayer-title" style="margin-bottom: 0;">Module Title</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeElearningPlayer()" aria-label="Close module player">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="modal-body" style="padding: 1.25rem;">
+        <!-- Simulated Video / Interactive Canvas Screen -->
+        <div class="elplayer-screen-wrap" id="elplayer-screen">
+          <div class="elplayer-video-sim">
+            <div class="video-overlay-center" id="elplayer-play-overlay" onclick="toggleElearningPlay()">
+              <i class="fa-solid fa-play" id="elplayer-play-icon"></i>
+            </div>
+            <div class="elplayer-watermark">Tata Capital L&D Academy • Internal Use Only</div>
+            <!-- Video Bottom Control Bar -->
+            <div class="video-controls-bar">
+              <button class="video-ctrl-btn" onclick="toggleElearningPlay()"><i class="fa-solid fa-play" id="elplayer-bottom-play-btn"></i></button>
+              <div class="video-timeline-wrap">
+                <div class="video-timeline-fill" id="elplayer-timeline-fill" style="width: 35%;"></div>
+              </div>
+              <span class="video-time-display" id="elplayer-time-display">04:12 / 12:00</span>
+              <span class="video-speed-pill">1.0x</span>
+              <button class="video-ctrl-btn" onclick="showToast('Volume set to 100%')"><i class="fa-solid fa-volume-high"></i></button>
+              <button class="video-ctrl-btn" onclick="toggleElearningFullscreen()"><i class="fa-solid fa-expand"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Module Meta Information & Interactive Tabs -->
+        <div class="elplayer-tabs-bar" style="margin-top: 1rem; display: flex; gap: 0.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+          <button class="tab-pill active" id="tab-elplayer-overview" onclick="switchElPlayerTab('overview')"><i class="fa-solid fa-circle-info"></i> Lesson Overview</button>
+          <button class="tab-pill" id="tab-elplayer-quiz" onclick="switchElPlayerTab('quiz')"><i class="fa-solid fa-clipboard-question"></i> Interactive Quiz (2 Questions)</button>
+          <button class="tab-pill" id="tab-elplayer-resources" onclick="switchElPlayerTab('resources')"><i class="fa-solid fa-download"></i> Handouts & Notes</button>
+        </div>
+
+        <!-- Tab 1: Overview -->
+        <div id="elplayer-pane-overview" class="elplayer-pane active" style="margin-top: 1rem;">
+          <div class="d-flex justify-between items-center" style="margin-bottom: 0.5rem; flex-wrap: wrap;">
+            <div>
+              <span class="text-muted" style="font-size: 0.8rem;">Lead Faculty:</span>
+              <strong id="elplayer-faculty" style="color: var(--tc-primary); font-size: 0.85rem;">Tata Capital Academy</strong>
+            </div>
+            <span class="badge badge-recommended" id="elplayer-duration"><i class="fa-solid fa-clock"></i> 15 Mins</span>
+          </div>
+          <p id="elplayer-description" style="font-size: 0.875rem; color: var(--text-body); line-height: 1.5; margin-bottom: 0.75rem;">
+            Detailed synopsis of the learning module.
+          </p>
+          <div style="background: var(--bg-surface-alt); padding: 0.75rem 1rem; border-radius: var(--radius-sm); border-left: 3px solid var(--tc-sky);">
+            <strong style="font-size: 0.8rem; color: var(--tc-primary);"><i class="fa-solid fa-bullseye"></i> Key Learning Objective:</strong>
+            <p id="elplayer-objective" style="font-size: 0.8rem; margin: 0.25rem 0 0; color: var(--text-muted);">
+              Apply credit underwriting guidelines and regulatory norms for zero-defect loan originations.
+            </p>
+          </div>
+        </div>
+
+        <!-- Tab 2: Interactive Quiz -->
+        <div id="elplayer-pane-quiz" class="elplayer-pane" style="display: none; margin-top: 1rem;">
+          <div id="elplayer-quiz-content">
+            <h4 style="font-size: 0.95rem; color: var(--tc-primary); margin-bottom: 0.5rem;"><i class="fa-solid fa-circle-check"></i> Knowledge Check: Quick Credit Caselet</h4>
+            <p style="font-size: 0.825rem; color: var(--text-body); margin-bottom: 0.75rem;">
+              <strong>Question 1:</strong> An applicant for an unsecured consumer loan shows an FOIR (Fixed Obligation to Income Ratio) of 62%. According to Tata Capital Retail Lending policy, what is the required sanction authority?
+            </p>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.825rem;">
+              <label class="radio-label" style="display: flex; gap: 0.5rem; align-items: center; padding: 0.5rem; background: var(--bg-surface-alt); border-radius: 4px; cursor: pointer;">
+                <input type="radio" name="elquiz1" value="A"> Auto-sanction by Branch Credit Officer
+              </label>
+              <label class="radio-label" style="display: flex; gap: 0.5rem; align-items: center; padding: 0.5rem; background: var(--bg-surface-alt); border-radius: 4px; cursor: pointer;">
+                <input type="radio" name="elquiz1" value="B" id="quiz-correct-ans"> Escalation to Area Credit Manager with Deviation Note (Correct Policy)
+              </label>
+              <label class="radio-label" style="display: flex; gap: 0.5rem; align-items: center; padding: 0.5rem; background: var(--bg-surface-alt); border-radius: 4px; cursor: pointer;">
+                <input type="radio" name="elquiz1" value="C"> Mandatory System Rejection without Exception
+              </label>
+            </div>
+            <div id="quiz-feedback-box" style="margin-top: 0.75rem; font-size: 0.8rem; display: none;"></div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Resources & Handouts -->
+        <div id="elplayer-pane-resources" class="elplayer-pane" style="display: none; margin-top: 1rem;">
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-surface-alt); border-radius: var(--radius-sm);">
+              <div>
+                <strong style="font-size: 0.825rem;"><i class="fa-solid fa-file-pdf" style="color: #ef4444; margin-right: 0.35rem;"></i> Module Cheat Sheet & Underwriting Grid (PDF)</strong>
+                <div class="text-muted" style="font-size: 0.725rem;">1.2 MB • Updated Nov 2026</div>
+              </div>
+              <button class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="showToast('Downloading Underwriting Cheat Sheet (PDF)...')">
+                <i class="fa-solid fa-download"></i> Download
+              </button>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: var(--bg-surface-alt); border-radius: var(--radius-sm);">
+              <div>
+                <strong style="font-size: 0.825rem;"><i class="fa-solid fa-file-excel" style="color: #10b981; margin-right: 0.35rem;"></i> FOIR & EMI Financial Calculation Model (XLSX)</strong>
+                <div class="text-muted" style="font-size: 0.725rem;">420 KB • Interactive Formulas</div>
+              </div>
+              <button class="btn btn-secondary" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;" onclick="showToast('Downloading Calculation Model (XLSX)...')">
+                <i class="fa-solid fa-download"></i> Download
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+        <button class="btn btn-secondary" onclick="closeElearningPlayer()">Exit Player</button>
+        <button class="btn btn-primary" id="elplayer-complete-btn" onclick="completeActiveElearningModule()">
+          <i class="fa-solid fa-award"></i> Complete Module & Claim Certificate
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  
+  <!-- 5. Sherpa 4-Step Deep Dive Modal -->
+  <div class="modal-overlay" id="sherpa-step-modal" onclick="closeModalOnBackdrop(event, 'sherpa-step-modal')">
+    <div class="modal-card" style="max-width: 640px; width: 95%;">
+      <div class="modal-header">
+        <div class="d-flex items-center gap-2">
+          <span class="badge" id="sherpa-modal-step-badge" style="background: var(--tc-warm); color: #fff;">Step 1</span>
+          <h3 class="modal-title" id="sherpa-modal-step-title" style="margin-bottom: 0;">Sherpa Journey Step Details</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('sherpa-step-modal')" aria-label="Close modal">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="modal-body" id="sherpa-modal-step-body" style="padding: 1.25rem;">
+        <!-- Injected dynamically in app.js -->
+      </div>
+
+      <div class="modal-footer" style="display: flex; justify-content: space-between;">
+        <button class="btn btn-secondary" onclick="closeModal('sherpa-step-modal')">Close</button>
+        <button class="btn btn-warm" onclick="closeModal('sherpa-step-modal'); scrollToSherpaForm();">
+          <i class="fa-solid fa-pen-to-square"></i> Nominate Yourself Now
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. Full 7-Page Corporate Newsletter PDF Viewer Modal -->
+  <div class="modal-overlay" id="newsletter-reader-modal" onclick="closeModalOnBackdrop(event, 'newsletter-reader-modal')">
+    <div class="modal-card" style="max-width: 860px; width: 96%; max-height: 90vh; display: flex; flex-direction: column;">
+      <div class="modal-header">
+        <div class="d-flex items-center gap-2" style="flex-wrap: wrap;">
+          <span class="badge badge-recommended">The Learning Curve Magazine</span>
+          <h3 class="modal-title" style="margin-bottom: 0;">Edition 14 (Q3 FY26) • 7-Page Official Edition</h3>
+        </div>
+        <button class="modal-close-btn" onclick="closeModal('newsletter-reader-modal')" aria-label="Close reader">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Reader Controls Toolbar -->
+      <div class="nl-reader-toolbar">
+        <div class="d-flex items-center gap-2">
+          <button class="btn btn-secondary" style="padding: 0.3rem 0.65rem; font-size: 0.75rem;" onclick="prevNewsletterPage()">
+            <i class="fa-solid fa-chevron-left"></i> Previous
+          </button>
+          <span id="nl-page-indicator" style="font-weight: 700; font-size: 0.8rem; color: var(--tc-primary);">Page 1 of 7</span>
+          <button class="btn btn-secondary" style="padding: 0.3rem 0.65rem; font-size: 0.75rem;" onclick="nextNewsletterPage()">
+            Next <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+
+        <!-- Quick Page Selector Pills -->
+        <div class="nl-page-pills" id="nl-page-pills">
+          <button class="page-num-pill active" onclick="gotoNewsletterPage(1)">1</button>
+          <button class="page-num-pill" onclick="gotoNewsletterPage(2)">2</button>
+          <button class="page-num-pill" onclick="gotoNewsletterPage(3)">3</button>
+          <button class="page-num-pill" onclick="gotoNewsletterPage(4)">4</button>
+          <button class="page-num-pill" onclick="gotoNewsletterPage(5)">5</button>
+          <button class="page-num-pill" onclick="gotoNewsletterPage(6)">6</button>
+          <button class="page-num-pill" onclick="gotoNewsletterPage(7)">7</button>
+        </div>
+
+        <button class="btn btn-warm" style="padding: 0.3rem 0.75rem; font-size: 0.75rem;" onclick="showToast('Downloading verified 7-Page The Learning Curve Magazine (PDF - 4.8 MB)...')">
+          <i class="fa-solid fa-download"></i> Download PDF
+        </button>
+      </div>
+
+      <!-- Reader Canvas Page Display -->
+      <div class="modal-body nl-reader-body" id="nl-reader-page-content" style="padding: 1.5rem; overflow-y: auto; background: #f8fafc;">
+        <!-- Rendered dynamically in app.js -->
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- =========================================================================
+       FOOTER
+       ========================================================================= -->
+  <footer class="main-footer no-print">
+    <div class="container footer-grid">
+      <div class="footer-col">
+        <div class="logo-box" style="margin-bottom: 1rem; width: fit-content;">
+          <span class="tata-title">TATA</span>
+          <span class="capital-subtitle">CAPITAL</span>
+        </div>
+        <p style="font-size: 0.825rem; color: #94a3b8; line-height: 1.5; max-width: 320px;">
+          Tata Capital Learning & Development Portal. Empowering our employees with 360-degree knowledge, compliance rigor, and leadership capabilities across all lending verticals.
+        </p>
+        <p style="font-size: 0.75rem; color: #64748b; margin-top: 0.75rem;">
+          "Count on Us" is a registered trademark of Tata Capital Limited.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h4>Learning Verticals</h4>
+        <ul>
+          <li><a href="#" onclick="setDemoBusiness('retail'); switchTab('learning-basket'); return false;">Retail Finance</a></li>
+          <li><a href="#" onclick="setDemoBusiness('housing'); switchTab('learning-basket'); return false;">Housing Finance</a></li>
+          <li><a href="#" onclick="setDemoBusiness('motor'); switchTab('learning-basket'); return false;">Motor Finance</a></li>
+          <li><a href="#" onclick="setDemoBusiness('microfinance'); switchTab('learning-basket'); return false;">Microfinance (JLG)</a></li>
+          <li><a href="#" onclick="setDemoBusiness('corporate_sme'); switchTab('learning-basket'); return false;">Corporate & SME</a></li>
+          <li><a href="#" onclick="setDemoBusiness('cleantech'); switchTab('learning-basket'); return false;">Cleantech Financing</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Programmes & Compliance</h4>
+        <ul>
+          <li><a href="#" onclick="switchTab('sherpa'); return false;">Project Sherpa (SME)</a></li>
+          <li><a href="#" onclick="switchTab('compliance'); return false;">Tata Code of Conduct (TCOC)</a></li>
+          <li><a href="#" onclick="switchTab('compliance'); return false;">Prevention of Sexual Harassment</a></li>
+          <li><a href="#" onclick="switchTab('compliance'); return false;">RBI Fair Practices Code</a></li>
+          <li><a href="#" onclick="switchTab('compliance'); return false;">AML / KYC Guidelines</a></li>
+          <li><a href="#" onclick="switchTab('compliance'); return false;">TAAP Affirmative Action</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>L&D Helpdesk & Contacts</h4>
+        <ul>
+          <li><i class="fa-solid fa-envelope" style="color: var(--tc-sky);"></i> <a href="mailto:learning.desk@tatacapital.com">learning.desk@tatacapital.com</a></li>
+          <li><i class="fa-solid fa-phone" style="color: var(--tc-sky);"></i> +91 (022) 6606 9000 (Ext 4210)</li>
+          <li><i class="fa-solid fa-clock" style="color: var(--tc-sky);"></i> Mon - Fri: 9:00 AM - 6:00 PM IST</li>
+          <li><i class="fa-solid fa-location-dot" style="color: var(--tc-sky);"></i> 11th Floor, Tower A, Peninsula Business Park, Mumbai</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container footer-bottom">
+      <div>
+        © 2024 Tata Capital Limited. All Rights Reserved. (Internal Training & Demo Portal).
+      </div>
+      <div>
+        Built with Pure HTML, CSS, JavaScript & Chart.js.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
